@@ -1,0 +1,59 @@
+import { NextResponse } from "next/server";
+
+import { createServiceRoleClient } from "@/lib/supabase/server";
+import { formatZodError, studentInsertSchema } from "@/lib/validators";
+
+const supabase = () => createServiceRoleClient();
+
+export async function GET() {
+  const { data, error } = await supabase()
+    .from("students")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ students: data }, { status: 200 });
+}
+
+export async function POST(request: Request) {
+  let payload: unknown;
+
+  try {
+    payload = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+  }
+
+  const parsed = studentInsertSchema.safeParse(payload);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Validation failed", details: formatZodError(parsed.error) },
+      { status: 422 },
+    );
+  }
+
+  const normalized = {
+    ...parsed.data,
+    grad_year: parsed.data.grad_year ?? null,
+    major: parsed.data.major ?? null,
+    interests: parsed.data.interests ?? null,
+  };
+
+  const { data, error } = await supabase()
+    .from("students")
+    .insert(normalized)
+    .select()
+    .single();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ student: data }, { status: 201 });
+}
+
+
