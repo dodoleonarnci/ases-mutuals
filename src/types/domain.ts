@@ -3,12 +3,17 @@ export type MatchStatus = "proposed" | "active" | "inactive";
 
 export type Student = {
   id: string;
-  first_name: string;
-  last_name: string;
+  first_name: string | null;
+  last_name: string | null;
   email: string;
   grad_year: number | null;
   major: string | null;
   interests: string[] | null;
+  sex: "male" | "female" | "non-binary" | null;
+  dorm: string | null;
+  involvements: string | null;
+  close_friends: string[] | null;
+  survey_completed: boolean;
   created_at: string;
 };
 
@@ -36,6 +41,3 @@ export type Signup = {
   email: string;
   created_at: string;
 };
-
-
-

@@ -2,11 +2,13 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -28,9 +30,13 @@ export default function SignUpPage() {
         throw new Error(payload.error ?? "Unable to save signup");
       }
 
+      if (!payload?.student?.id) {
+        throw new Error("Unable to create your account. Please try again.");
+      }
+
+      router.push(payload.surveyPath ?? `/survey?studentId=${payload.student.id}`);
       setEmail("");
       setStatus("success");
-      setMessage("You're on the list! We'll reach out soon with next steps.");
     } catch (error) {
       setStatus("error");
       setMessage(

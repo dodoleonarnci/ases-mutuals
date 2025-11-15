@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { deriveStudentIdentifier } from "@/lib/identifiers";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { formatZodError, signupInsertSchema } from "@/lib/validators";
 
@@ -39,10 +40,34 @@ export async function POST(request: Request) {
   const normalized = {
     email: parsed.data.email.trim().toLowerCase(),
   };
+  const studentId = deriveStudentIdentifier(normalized.email);
 
-  const { data, error } = await supabase()
-    .from("signups")
-    .insert(normalized)
+  const client = supabase();
+
+  await client.from("signups").upsert(normalized, {
+    onConflict: "email",
+  });
+
+  const { data: existingStudent, error: existingError } = await client
+    .from("students")
+    .select("*")
+    .eq("email", normalized.email)
+    .maybeSingle();
+
+  if (existingError && existingError.code !== "PGRST116") {
+    return NextResponse.json({ error: existingError.message }, { status: 500 });
+  }
+
+  if (existingStudent) {
+    return NextResponse.json(
+      { student: existingStudent, surveyPath: `/survey?studentId=${existingStudent.id}` },
+      { status: 200 },
+    );
+  }
+
+  const { data: student, error } = await client
+    .from("students")
+    .insert({ id: studentId, email: normalized.email })
     .select()
     .single();
 
@@ -50,7 +75,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ signup: data }, { status: 201 });
+  return NextResponse.json(
+    { student, surveyPath: `/survey?studentId=${student.id}` },
+    { status: 201 },
+  );
 }
 
 

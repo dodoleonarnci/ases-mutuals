@@ -67,7 +67,7 @@ Located under `src/app/api/*` and automatically deployed as Vercel serverless fu
 | Route | Methods | Description |
 | --- | --- | --- |
 | `/api/students` | `GET`, `POST` | List students or create a profile. |
-| `/api/students/[id]` | `GET` | Fetch a single student by UUID. |
+| `/api/students/[id]` | `GET` | Fetch a single student by their email handle (e.g. `sunet`). |
 | `/api/friendships` | `GET`, `POST` | Manage friendship requests between students. |
 | `/api/matches` | `GET`, `POST` | Persist match outcomes with optional friendship linkage. |
 

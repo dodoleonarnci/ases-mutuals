@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { deriveStudentIdentifier } from "@/lib/identifiers";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { formatZodError, studentInsertSchema } from "@/lib/validators";
 
@@ -38,6 +39,7 @@ export async function POST(request: Request) {
 
   const normalized = {
     ...parsed.data,
+    id: deriveStudentIdentifier(parsed.data.email),
     grad_year: parsed.data.grad_year ?? null,
     major: parsed.data.major ?? null,
     interests: parsed.data.interests ?? null,

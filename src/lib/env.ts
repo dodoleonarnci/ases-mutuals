@@ -19,7 +19,6 @@ const parsed = envSchema.safeParse({
 });
 
 if (!parsed.success) {
-  // eslint-disable-next-line no-console
   console.error(
     "❌ Missing or invalid environment variables:\n",
     parsed.error.flatten().fieldErrors,
@@ -29,4 +28,4 @@ if (!parsed.success) {
 
 export const env = parsed.data;
 
-
+ 

@@ -1,19 +1,27 @@
 import { NextResponse } from "next/server";
 
+import { studentIdentifierSchema } from "@/lib/identifiers";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { formatZodError, studentSurveySchema } from "@/lib/validators";
 
 type Params = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-export async function GET(_: Request, { params }: Params) {
-  const { id } = params;
+export async function GET(_: Request, context: Params) {
+  const { id } = await context.params;
+  const idResult = studentIdentifierSchema.safeParse(id?.trim());
+
+  if (!idResult.success) {
+    return NextResponse.json({ error: "Student id must be a valid identifier" }, { status: 400 });
+  }
+
   const supabase = createServiceRoleClient();
 
   const { data, error } = await supabase
     .from("students")
     .select("*")
-    .eq("id", id)
+    .eq("id", idResult.data)
     .single();
 
   if (error) {
@@ -27,4 +35,56 @@ export async function GET(_: Request, { params }: Params) {
   return NextResponse.json({ student: data });
 }
 
+export async function PATCH(request: Request, context: Params) {
+  const { id } = await context.params;
+  const idResult = studentIdentifierSchema.safeParse(id?.trim());
 
+  if (!idResult.success) {
+    return NextResponse.json({ error: "Student id must be a valid identifier" }, { status: 400 });
+  }
+
+  let payload: unknown;
+
+  try {
+    payload = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+  }
+
+  const parsed = studentSurveySchema.safeParse(payload);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Validation failed", details: formatZodError(parsed.error) },
+      { status: 422 },
+    );
+  }
+
+  const supabase = createServiceRoleClient();
+
+  const { data, error } = await supabase
+    .from("students")
+    .update({
+      grad_year: parsed.data.grad_year,
+      sex: parsed.data.sex,
+      major: parsed.data.major,
+      dorm: parsed.data.dorm,
+      interests: parsed.data.hobbies,
+      involvements: parsed.data.involvements,
+      close_friends: parsed.data.close_friends,
+      survey_completed: true,
+    })
+    .eq("id", idResult.data)
+    .select()
+    .single();
+
+  if (error) {
+    const status = error.code === "PGRST116" ? 404 : 500;
+
+    return NextResponse.json({ error: error.message }, { status });
+  }
+
+  return NextResponse.json({ student: data }, { status: 200 });
+}
+
+ 
