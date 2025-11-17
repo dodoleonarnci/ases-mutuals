@@ -91,6 +91,12 @@ curl -X POST http://localhost:3000/api/students \
 - Tailwind CSS is pre-configured via `src/app/globals.css`.
 - When you are ready to build UI for matches/friendships, call the API Routes with `fetch("/api/...",{ cache: "no-store" })` to keep data fresh on Vercel.
 
+## Recent additions
+
+- `src/matching/dataAccess.ts` can export the current Supabase state (students, friendships, matches) into a reproducible JSON snapshot at `src/matching/data/local_dataset.json`. Run it locally to capture production-like data before iterating on matching ideas.
+- `src/matching/student.py` plus `src/matching/loader.py` define a simple Python sandbox that loads the cached dataset, converts rows into a typed `Student` helper, and wires up NumPy so you can prototype scoring, Sinkhorn/Hungarian matching, or other heuristics outside the Next.js runtime.
+- The dataset export + Python helpers form a tight feedback loop: fetch Supabase → experiment locally → push results back through `/api/matches` once you're satisfied.
+
 ## Deployment
 
 1. Push to GitHub (or similar).
@@ -105,3 +111,12 @@ curl -X POST http://localhost:3000/api/students \
 - **Database errors**: API responses return the Supabase error message plus HTTP 500 so you can surface them in logs or client toasts.
 
 You're now ready to extend the UI, add auth, or layer on matching logic without touching the plumbing. Happy building!
+
+## Future roadmap
+
+1. **Improve matching algorithm** – Still need to simulate data with better assumptions (e.g. more STEM majors, etc.)
+2. **Improve survey question details** – Audit the current survey in `src/app/survey` and the `students` schema, identify gaps (interests granularity, time constraints, dorm clusters), extend the Supabase migration + Zod validators, then version the survey UI so each answer maps cleanly to scoring inputs.
+3. **Automated email notifications (Outlook group)** – Provision an ASES Outlook distribution list/shared mailbox, register an Azure app for SMTP or Graph send permissions, and add a server-side job (API Route, edge function, or Supabase cron) that emails match announcements and reminders directly from the group.
+4. **SAML logins via Stanford IT** – File a SAML/SP request with UIT, ingest the IdP metadata, and integrate a SAML ACS endpoint (via `next-auth` or custom middleware) so users authenticate through Stanford WebLogin instead of passwordless placeholder accounts; map SAML attributes to Supabase `students`.
+5. **Admin dashboards** – Create a protected `src/app/admin` route guarded by SAML roles where organizers can monitor survey completion, trigger re-matching runs, and review email delivery logs.
+6. **Automated dataset refresh** – Move `fetchAndStoreDataset` into a scheduled Vercel Cron task or Supabase Edge Function so the local JSON snapshot stays current for analysts without manual scripts.

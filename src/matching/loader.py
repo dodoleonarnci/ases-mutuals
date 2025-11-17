@@ -5,13 +5,48 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any, Dict
-import numpy as np
-from matching.student import Student
+from student import Student
 
 DATA_FILE = Path(__file__).parent / "data" / "local_dataset.json"
+MOCK_DATASET_FILE = Path(__file__).parent / "data" / "mock_dataset.json"
 
 def load_local_dataset(path: Path = DATA_FILE) -> Dict[str, Any]:
     """Load the locally cached dataset produced by dataAccess.ts."""
+    with path.open("r", encoding="utf-8") as fh:
+        return json.load(fh)
+
+def save_local_dataset(dataset: Dict[str, Any], path: Path = DATA_FILE) -> None:
+    """Save a dataset to the local JSON file."""
+    with path.open("w", encoding="utf-8") as fh:
+        json.dump(dataset, fh, indent=2, ensure_ascii=False)
+
+def save_mock_dataset(dataset: Dict[str, Any], path: Path = MOCK_DATASET_FILE) -> None:
+    """
+    Save a mock dataset to a JSON file.
+    
+    Args:
+        dataset: Dictionary with 'students', 'friendships', and 'matches' keys
+        path: Path to save the mock dataset (defaults to data/mock_dataset.json)
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as fh:
+        json.dump(dataset, fh, indent=2, ensure_ascii=False)
+
+def load_mock_dataset(path: Path = MOCK_DATASET_FILE) -> Dict[str, Any]:
+    """
+    Load a mock dataset from a JSON file.
+    
+    Args:
+        path: Path to the mock dataset file (defaults to data/mock_dataset.json)
+    
+    Returns:
+        Dictionary with 'students', 'friendships', and 'matches' keys
+    
+    Raises:
+        FileNotFoundError: If the file doesn't exist
+    """
+    if not path.exists():
+        raise FileNotFoundError(f"Mock dataset file not found: {path}")
     with path.open("r", encoding="utf-8") as fh:
         return json.load(fh)
 
@@ -30,27 +65,5 @@ def parse_student(student: Dict[str, Any]) -> Student:
         close_friends=student["close_friends"] or None,
         survey_completed=student["survey_completed"],
     )
-    
-def match_score(student_a: Student, student_b: Student) -> float:
-    return 0.0
-
-def sinkhorn_matching(scores: np.ndarray) -> np.ndarray:
-    return scores
-
-if __name__ == "__main__":
-    dataset = load_local_dataset()
-    parsed_students = []
-    for student in dataset["students"]:
-        parsed_student = parse_student(student)
-        parsed_students.append(parsed_student)
-    print(f"Loaded {len(parsed_students)} students")
-    
-    scores = np.zeros((len(parsed_students), len(parsed_students)))
-    
-    for student_a in parsed_students:
-        for student_b in parsed_students:
-            if student_a.id != student_b.id:
-                score = match_score(student_a, student_b)
-                scores[parsed_students.index(student_a), parsed_students.index(student_b)] = score
 
     

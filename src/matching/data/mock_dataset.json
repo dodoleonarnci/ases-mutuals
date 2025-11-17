@@ -1,0 +1,1896 @@
+{
+  "students": [
+    {
+      "id": "quinnjohnson0",
+      "first_name": null,
+      "last_name": "Johnson",
+      "email": "quinnjohnson0@stanford.edu",
+      "grad_year": 2029,
+      "major": "Psychology",
+      "interests": [
+        "Fitness"
+      ],
+      "sex": "male",
+      "dorm": "Stern",
+      "involvements": "Theater",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401152+00:00"
+    },
+    {
+      "id": "jordangarcia1",
+      "first_name": "Jordan",
+      "last_name": "Garcia",
+      "email": "jordangarcia1@stanford.edu",
+      "grad_year": 2025,
+      "major": "Political Science",
+      "interests": [
+        "Fitness",
+        "Volunteering"
+      ],
+      "sex": "non-binary",
+      "dorm": "Lagunita Court",
+      "involvements": "Instrumental music",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401168+00:00"
+    },
+    {
+      "id": "alexhernandez2",
+      "first_name": null,
+      "last_name": null,
+      "email": "alexhernandez2@stanford.edu",
+      "grad_year": 2029,
+      "major": "Music",
+      "interests": [
+        "Yoga",
+        "Gaming"
+      ],
+      "sex": "female",
+      "dorm": "Crothers",
+      "involvements": "Theater",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401175+00:00"
+    },
+    {
+      "id": "miagreen3",
+      "first_name": null,
+      "last_name": "Green",
+      "email": "miagreen3@stanford.edu",
+      "grad_year": 2026,
+      "major": "Engineering",
+      "interests": [
+        "Theater"
+      ],
+      "sex": "non-binary",
+      "dorm": "Casper",
+      "involvements": "Instrumental music",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401184+00:00"
+    },
+    {
+      "id": "isabellahill4",
+      "first_name": "Isabella",
+      "last_name": "Hill",
+      "email": "isabellahill4@stanford.edu",
+      "grad_year": 2025,
+      "major": "Mathematics",
+      "interests": [
+        "Art"
+      ],
+      "sex": "male",
+      "dorm": "Stern",
+      "involvements": "Research Lab",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401189+00:00"
+    },
+    {
+      "id": "alexandersanchez5",
+      "first_name": "Alexander",
+      "last_name": "Sanchez",
+      "email": "alexandersanchez5@stanford.edu",
+      "grad_year": 2025,
+      "major": "Philosophy",
+      "interests": [
+        "Reading",
+        "Travel",
+        "Fitness"
+      ],
+      "sex": "female",
+      "dorm": "Stern",
+      "involvements": "Sustainability",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401194+00:00"
+    },
+    {
+      "id": "jamesjackson6",
+      "first_name": "James",
+      "last_name": null,
+      "email": "jamesjackson6@stanford.edu",
+      "grad_year": 2029,
+      "major": "Political Science",
+      "interests": [
+        "Sports",
+        "Yoga"
+      ],
+      "sex": "non-binary",
+      "dorm": "Branner",
+      "involvements": "Entrepreneurship",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401198+00:00"
+    },
+    {
+      "id": "emilythompson7",
+      "first_name": "Emily",
+      "last_name": "Thompson",
+      "email": "emilythompson7@stanford.edu",
+      "grad_year": 2025,
+      "major": "Medicine",
+      "interests": [
+        "Cooking",
+        "Art",
+        "Fitness"
+      ],
+      "sex": "female",
+      "dorm": "Casper",
+      "involvements": "Theater",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401205+00:00"
+    },
+    {
+      "id": "lucasflores8",
+      "first_name": "Lucas",
+      "last_name": "Flores",
+      "email": "lucasflores8@stanford.edu",
+      "grad_year": 2027,
+      "major": "Philosophy",
+      "interests": [
+        "Reading",
+        "Sports",
+        "Gaming",
+        "Cooking"
+      ],
+      "sex": "male",
+      "dorm": "Florence Moore",
+      "involvements": "Instrumental music",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401210+00:00"
+    },
+    {
+      "id": "lucasgreen9",
+      "first_name": "Lucas",
+      "last_name": "Green",
+      "email": "lucasgreen9@stanford.edu",
+      "grad_year": 2024,
+      "major": "Art",
+      "interests": [
+        "Fitness",
+        "Music",
+        "Gaming"
+      ],
+      "sex": "female",
+      "dorm": "Casper",
+      "involvements": "Instrumental music",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401214+00:00"
+    },
+    {
+      "id": "oliviawhite10",
+      "first_name": "Olivia",
+      "last_name": "White",
+      "email": "oliviawhite10@stanford.edu",
+      "grad_year": 2024,
+      "major": "English",
+      "interests": [
+        "Dancing"
+      ],
+      "sex": "female",
+      "dorm": "Florence Moore",
+      "involvements": "ACM",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401218+00:00"
+    },
+    {
+      "id": "ameliamiller11",
+      "first_name": "Amelia",
+      "last_name": "Miller",
+      "email": "ameliamiller11@stanford.edu",
+      "grad_year": 2030,
+      "major": "English",
+      "interests": [
+        "Travel",
+        "Fitness",
+        "Writing"
+      ],
+      "sex": "non-binary",
+      "dorm": "Stern",
+      "involvements": "Theater",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401222+00:00"
+    },
+    {
+      "id": "charlottejohnson12",
+      "first_name": null,
+      "last_name": "Johnson",
+      "email": "charlottejohnson12@stanford.edu",
+      "grad_year": 2024,
+      "major": "Philosophy",
+      "interests": [
+        "Meditation",
+        "Reading"
+      ],
+      "sex": "female",
+      "dorm": "Stern",
+      "involvements": "Entrepreneurship",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401226+00:00"
+    },
+    {
+      "id": "caseytorres13",
+      "first_name": "Casey",
+      "last_name": "Torres",
+      "email": "caseytorres13@stanford.edu",
+      "grad_year": 2030,
+      "major": "Chemistry",
+      "interests": [
+        "Dancing",
+        "Writing"
+      ],
+      "sex": "male",
+      "dorm": "Casper",
+      "involvements": "Instrumental music",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401229+00:00"
+    },
+    {
+      "id": "sagetorres14",
+      "first_name": "Sage",
+      "last_name": "Torres",
+      "email": "sagetorres14@stanford.edu",
+      "grad_year": 2030,
+      "major": "Economics",
+      "interests": [
+        "Entrepreneurship",
+        "Writing",
+        "Chess"
+      ],
+      "sex": "non-binary",
+      "dorm": "Crothers",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401233+00:00"
+    },
+    {
+      "id": "avajohnson15",
+      "first_name": "Ava",
+      "last_name": "Johnson",
+      "email": "avajohnson15@stanford.edu",
+      "grad_year": 2028,
+      "major": "Political Science",
+      "interests": [
+        "Sports"
+      ],
+      "sex": "non-binary",
+      "dorm": "Stern",
+      "involvements": "Entrepreneurship",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401236+00:00"
+    },
+    {
+      "id": "avajones16",
+      "first_name": "Ava",
+      "last_name": "Jones",
+      "email": "avajones16@stanford.edu",
+      "grad_year": 2028,
+      "major": "Political Science",
+      "interests": [
+        "Cooking",
+        "Meditation",
+        "Research",
+        "Art",
+        "Fitness"
+      ],
+      "sex": "female",
+      "dorm": "Casper",
+      "involvements": "Club Sports",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401240+00:00"
+    },
+    {
+      "id": "averyrobinson17",
+      "first_name": "Avery",
+      "last_name": "Robinson",
+      "email": "averyrobinson17@stanford.edu",
+      "grad_year": 2026,
+      "major": "Music",
+      "interests": [
+        "Sports"
+      ],
+      "sex": "female",
+      "dorm": "Casper",
+      "involvements": "Entrepreneurship",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401243+00:00"
+    },
+    {
+      "id": "averytaylor18",
+      "first_name": "Avery",
+      "last_name": null,
+      "email": "averytaylor18@stanford.edu",
+      "grad_year": 2025,
+      "major": "Economics",
+      "interests": [
+        "Travel",
+        "Dancing",
+        "Entrepreneurship",
+        "Art"
+      ],
+      "sex": "non-binary",
+      "dorm": "Casper",
+      "involvements": "Theater",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401247+00:00"
+    },
+    {
+      "id": "abigailmiller19",
+      "first_name": "Abigail",
+      "last_name": "Miller",
+      "email": "abigailmiller19@stanford.edu",
+      "grad_year": 2024,
+      "major": "Computer Science",
+      "interests": [
+        "Research",
+        "Chess",
+        "Photography",
+        "Theater"
+      ],
+      "sex": "male",
+      "dorm": "Stern",
+      "involvements": "Theater",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401251+00:00"
+    },
+    {
+      "id": "alexclark20",
+      "first_name": "Alex",
+      "last_name": "Clark",
+      "email": "alexclark20@stanford.edu",
+      "grad_year": 2026,
+      "major": "Business",
+      "interests": [
+        "Cooking",
+        "Photography",
+        "Hiking",
+        "Meditation"
+      ],
+      "sex": "female",
+      "dorm": "Wilbur",
+      "involvements": "Instrumental music",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401254+00:00"
+    },
+    {
+      "id": "evelynbrown21",
+      "first_name": "Evelyn",
+      "last_name": null,
+      "email": "evelynbrown21@stanford.edu",
+      "grad_year": 2029,
+      "major": "History",
+      "interests": [
+        "Writing",
+        "Chess",
+        "Travel",
+        "Sports"
+      ],
+      "sex": "male",
+      "dorm": "Lagunita Court",
+      "involvements": "Vocal",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401258+00:00"
+    },
+    {
+      "id": "skylarjones22",
+      "first_name": "Skylar",
+      "last_name": "Jones",
+      "email": "skylarjones22@stanford.edu",
+      "grad_year": 2028,
+      "major": "Mathematics",
+      "interests": [
+        "Meditation"
+      ],
+      "sex": "non-binary",
+      "dorm": "Stern",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401261+00:00"
+    },
+    {
+      "id": "rileylewis23",
+      "first_name": "Riley",
+      "last_name": "Lewis",
+      "email": "rileylewis23@stanford.edu",
+      "grad_year": 2029,
+      "major": "History",
+      "interests": [
+        "Art",
+        "Dancing",
+        "Theater"
+      ],
+      "sex": "female",
+      "dorm": "Stern",
+      "involvements": "Sustainability",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401265+00:00"
+    },
+    {
+      "id": "alexanderthompson24",
+      "first_name": "Alexander",
+      "last_name": "Thompson",
+      "email": "alexanderthompson24@stanford.edu",
+      "grad_year": 2030,
+      "major": "Mathematics",
+      "interests": [
+        "Gaming",
+        "Reading",
+        "Fitness",
+        "Photography",
+        "Dancing"
+      ],
+      "sex": "male",
+      "dorm": "Casper",
+      "involvements": "Vocal",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401269+00:00"
+    },
+    {
+      "id": "caseytaylor25",
+      "first_name": "Casey",
+      "last_name": "Taylor",
+      "email": "caseytaylor25@stanford.edu",
+      "grad_year": 2026,
+      "major": "English",
+      "interests": [
+        "Chess",
+        "Writing",
+        "Music"
+      ],
+      "sex": "male",
+      "dorm": "Casper",
+      "involvements": "Instrumental music",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401274+00:00"
+    },
+    {
+      "id": "averyrodriguez26",
+      "first_name": "Avery",
+      "last_name": "Rodriguez",
+      "email": "averyrodriguez26@stanford.edu",
+      "grad_year": 2026,
+      "major": "Physics",
+      "interests": [
+        "Chess",
+        "Photography",
+        "Yoga"
+      ],
+      "sex": "male",
+      "dorm": "Florence Moore",
+      "involvements": "Research Lab",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401278+00:00"
+    },
+    {
+      "id": "emmawright27",
+      "first_name": "Emma",
+      "last_name": "Wright",
+      "email": "emmawright27@stanford.edu",
+      "grad_year": 2027,
+      "major": "Psychology",
+      "interests": [
+        "Dancing",
+        "Sports",
+        "Music",
+        "Yoga"
+      ],
+      "sex": "male",
+      "dorm": "GovCo",
+      "involvements": "Sustainability",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401282+00:00"
+    },
+    {
+      "id": "emmahernandez28",
+      "first_name": null,
+      "last_name": "Hernandez",
+      "email": "emmahernandez28@stanford.edu",
+      "grad_year": 2029,
+      "major": "Business",
+      "interests": [
+        "Gaming"
+      ],
+      "sex": "non-binary",
+      "dorm": "Wilbur",
+      "involvements": "Instrumental music",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401285+00:00"
+    },
+    {
+      "id": "camerontorres29",
+      "first_name": "Cameron",
+      "last_name": "Torres",
+      "email": "camerontorres29@stanford.edu",
+      "grad_year": 2024,
+      "major": "Philosophy",
+      "interests": [
+        "Sports",
+        "Hiking"
+      ],
+      "sex": "non-binary",
+      "dorm": "Florence Moore",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401288+00:00"
+    },
+    {
+      "id": "taylorharris30",
+      "first_name": "Taylor",
+      "last_name": null,
+      "email": "taylorharris30@stanford.edu",
+      "grad_year": 2025,
+      "major": "Political Science",
+      "interests": [
+        "Volunteering",
+        "Cooking",
+        "Art",
+        "Travel",
+        "Writing"
+      ],
+      "sex": "non-binary",
+      "dorm": "GovCo",
+      "involvements": "Newspaper",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401293+00:00"
+    },
+    {
+      "id": "avalewis31",
+      "first_name": "Ava",
+      "last_name": "Lewis",
+      "email": "avalewis31@stanford.edu",
+      "grad_year": 2030,
+      "major": "Political Science",
+      "interests": [
+        "Sports",
+        "Research",
+        "Art",
+        "Photography"
+      ],
+      "sex": "female",
+      "dorm": "Florence Moore",
+      "involvements": "Dance Groups",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401296+00:00"
+    },
+    {
+      "id": "liamthomas32",
+      "first_name": "Liam",
+      "last_name": "Thomas",
+      "email": "liamthomas32@stanford.edu",
+      "grad_year": 2025,
+      "major": "Computer Science",
+      "interests": [
+        "Dancing",
+        "Reading",
+        "Chess"
+      ],
+      "sex": "non-binary",
+      "dorm": "Stern",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401300+00:00"
+    },
+    {
+      "id": "evelynwhite33",
+      "first_name": "Evelyn",
+      "last_name": "White",
+      "email": "evelynwhite33@stanford.edu",
+      "grad_year": 2024,
+      "major": "Physics",
+      "interests": [
+        "Sports",
+        "Gaming",
+        "Volunteering"
+      ],
+      "sex": "female",
+      "dorm": "Florence Moore",
+      "involvements": "Vocal",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401304+00:00"
+    },
+    {
+      "id": "lucasgreen34",
+      "first_name": null,
+      "last_name": "Green",
+      "email": "lucasgreen34@stanford.edu",
+      "grad_year": 2028,
+      "major": "Physics",
+      "interests": [
+        "Volunteering"
+      ],
+      "sex": "female",
+      "dorm": "Stern",
+      "involvements": "Research Lab",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401307+00:00"
+    },
+    {
+      "id": "evelynwilson35",
+      "first_name": "Evelyn",
+      "last_name": "Wilson",
+      "email": "evelynwilson35@stanford.edu",
+      "grad_year": 2026,
+      "major": "Music",
+      "interests": [
+        "Gaming",
+        "Hiking",
+        "Writing"
+      ],
+      "sex": "male",
+      "dorm": "Branner",
+      "involvements": "Vocal",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401311+00:00"
+    },
+    {
+      "id": "williammartin36",
+      "first_name": "William",
+      "last_name": null,
+      "email": "williammartin36@stanford.edu",
+      "grad_year": 2028,
+      "major": "Chemistry",
+      "interests": [
+        "Travel",
+        "Meditation",
+        "Hiking",
+        "Theater"
+      ],
+      "sex": "male",
+      "dorm": "Wilbur",
+      "involvements": "Sustainability",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401314+00:00"
+    },
+    {
+      "id": "noahanderson37",
+      "first_name": "Noah",
+      "last_name": "Anderson",
+      "email": "noahanderson37@stanford.edu",
+      "grad_year": 2027,
+      "major": "History",
+      "interests": [
+        "Writing",
+        "Research"
+      ],
+      "sex": "female",
+      "dorm": "Casper",
+      "involvements": "ACM",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401318+00:00"
+    },
+    {
+      "id": "dakotagarcia38",
+      "first_name": null,
+      "last_name": "Garcia",
+      "email": "dakotagarcia38@stanford.edu",
+      "grad_year": 2026,
+      "major": "History",
+      "interests": [
+        "Art",
+        "Photography",
+        "Cooking"
+      ],
+      "sex": "male",
+      "dorm": "Stern",
+      "involvements": "Sustainability",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401321+00:00"
+    },
+    {
+      "id": "masonjones39",
+      "first_name": "Mason",
+      "last_name": "Jones",
+      "email": "masonjones39@stanford.edu",
+      "grad_year": 2027,
+      "major": "Music",
+      "interests": [
+        "Theater",
+        "Art",
+        "Cooking",
+        "Music"
+      ],
+      "sex": "non-binary",
+      "dorm": "Stern",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401325+00:00"
+    },
+    {
+      "id": "averyrobinson40",
+      "first_name": "Avery",
+      "last_name": "Robinson",
+      "email": "averyrobinson40@stanford.edu",
+      "grad_year": 2025,
+      "major": "Biology",
+      "interests": [
+        "Art",
+        "Gaming",
+        "Entrepreneurship",
+        "Cooking",
+        "Fitness"
+      ],
+      "sex": "non-binary",
+      "dorm": "Casper",
+      "involvements": "Entrepreneurship",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401329+00:00"
+    },
+    {
+      "id": "sophiawalker41",
+      "first_name": "Sophia",
+      "last_name": "Walker",
+      "email": "sophiawalker41@stanford.edu",
+      "grad_year": 2028,
+      "major": "Music",
+      "interests": [
+        "Entrepreneurship",
+        "Dancing",
+        "Art",
+        "Meditation"
+      ],
+      "sex": "non-binary",
+      "dorm": "Casper",
+      "involvements": "Theater",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401333+00:00"
+    },
+    {
+      "id": "phoenixjackson42",
+      "first_name": null,
+      "last_name": "Jackson",
+      "email": "phoenixjackson42@stanford.edu",
+      "grad_year": 2027,
+      "major": "Mathematics",
+      "interests": [
+        "Yoga",
+        "Chess",
+        "Fitness"
+      ],
+      "sex": "non-binary",
+      "dorm": "Crothers",
+      "involvements": "Club Sports",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401337+00:00"
+    },
+    {
+      "id": "jamesmartinez43",
+      "first_name": null,
+      "last_name": "Martinez",
+      "email": "jamesmartinez43@stanford.edu",
+      "grad_year": 2029,
+      "major": "Economics",
+      "interests": [
+        "Fitness",
+        "Entrepreneurship",
+        "Volunteering"
+      ],
+      "sex": "male",
+      "dorm": "Wilbur",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401340+00:00"
+    },
+    {
+      "id": "jamesflores44",
+      "first_name": "James",
+      "last_name": "Flores",
+      "email": "jamesflores44@stanford.edu",
+      "grad_year": 2029,
+      "major": "Computer Science",
+      "interests": [
+        "Movies"
+      ],
+      "sex": "non-binary",
+      "dorm": "Wilbur",
+      "involvements": "ACM",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401343+00:00"
+    },
+    {
+      "id": "benjamintorres45",
+      "first_name": "Benjamin",
+      "last_name": "Torres",
+      "email": "benjamintorres45@stanford.edu",
+      "grad_year": 2029,
+      "major": "Political Science",
+      "interests": [
+        "Research",
+        "Music",
+        "Theater",
+        "Yoga"
+      ],
+      "sex": "female",
+      "dorm": "Stern",
+      "involvements": "Research Lab",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401347+00:00"
+    },
+    {
+      "id": "dakotayoung46",
+      "first_name": "Dakota",
+      "last_name": "Young",
+      "email": "dakotayoung46@stanford.edu",
+      "grad_year": 2025,
+      "major": "Computer Science",
+      "interests": [
+        "Cooking",
+        "Entrepreneurship",
+        "Travel",
+        "Sports"
+      ],
+      "sex": "female",
+      "dorm": "Lagunita Court",
+      "involvements": "Dance Groups",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401350+00:00"
+    },
+    {
+      "id": "alexanderthompson47",
+      "first_name": null,
+      "last_name": "Thompson",
+      "email": "alexanderthompson47@stanford.edu",
+      "grad_year": 2026,
+      "major": "Art",
+      "interests": [
+        "Research"
+      ],
+      "sex": "female",
+      "dorm": "Wilbur",
+      "involvements": "Research Lab",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401354+00:00"
+    },
+    {
+      "id": "miathomas48",
+      "first_name": "Mia",
+      "last_name": "Thomas",
+      "email": "miathomas48@stanford.edu",
+      "grad_year": 2029,
+      "major": "Mathematics",
+      "interests": [
+        "Photography",
+        "Music"
+      ],
+      "sex": "non-binary",
+      "dorm": "Lagunita Court",
+      "involvements": "Entrepreneurship",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401358+00:00"
+    },
+    {
+      "id": "masondavis49",
+      "first_name": "Mason",
+      "last_name": "Davis",
+      "email": "masondavis49@stanford.edu",
+      "grad_year": 2028,
+      "major": "Economics",
+      "interests": [
+        "Chess",
+        "Gaming"
+      ],
+      "sex": "female",
+      "dorm": "Crothers",
+      "involvements": "Newspaper",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401363+00:00"
+    },
+    {
+      "id": "liammiller50",
+      "first_name": "Liam",
+      "last_name": "Miller",
+      "email": "liammiller50@stanford.edu",
+      "grad_year": 2028,
+      "major": "Computer Science",
+      "interests": [
+        "Reading",
+        "Meditation"
+      ],
+      "sex": "female",
+      "dorm": "Wilbur",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401366+00:00"
+    },
+    {
+      "id": "averylee51",
+      "first_name": null,
+      "last_name": "Lee",
+      "email": "averylee51@stanford.edu",
+      "grad_year": 2030,
+      "major": "Physics",
+      "interests": [
+        "Volunteering",
+        "Movies",
+        "Reading",
+        "Writing",
+        "Yoga"
+      ],
+      "sex": "non-binary",
+      "dorm": "Lagunita Court",
+      "involvements": "Newspaper",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401370+00:00"
+    },
+    {
+      "id": "charlottemiller52",
+      "first_name": "Charlotte",
+      "last_name": "Miller",
+      "email": "charlottemiller52@stanford.edu",
+      "grad_year": 2027,
+      "major": "Philosophy",
+      "interests": [
+        "Travel",
+        "Writing",
+        "Dancing",
+        "Research"
+      ],
+      "sex": "non-binary",
+      "dorm": "Casper",
+      "involvements": "Theater",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401374+00:00"
+    },
+    {
+      "id": "elizabethjackson53",
+      "first_name": "Elizabeth",
+      "last_name": "Jackson",
+      "email": "elizabethjackson53@stanford.edu",
+      "grad_year": 2026,
+      "major": "Political Science",
+      "interests": [
+        "Entrepreneurship",
+        "Meditation"
+      ],
+      "sex": "male",
+      "dorm": "Crothers",
+      "involvements": "ACM",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401378+00:00"
+    },
+    {
+      "id": "jordanking54",
+      "first_name": "Jordan",
+      "last_name": "King",
+      "email": "jordanking54@stanford.edu",
+      "grad_year": 2030,
+      "major": "History",
+      "interests": [
+        "Dancing",
+        "Yoga",
+        "Chess"
+      ],
+      "sex": "male",
+      "dorm": "Casper",
+      "involvements": "Club Sports",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401381+00:00"
+    },
+    {
+      "id": "olivianguyen55",
+      "first_name": "Olivia",
+      "last_name": null,
+      "email": "olivianguyen55@stanford.edu",
+      "grad_year": 2024,
+      "major": "Economics",
+      "interests": [
+        "Fitness",
+        "Art",
+        "Research",
+        "Chess"
+      ],
+      "sex": "male",
+      "dorm": "Stern",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401444+00:00"
+    },
+    {
+      "id": "noahthomas56",
+      "first_name": "Noah",
+      "last_name": "Thomas",
+      "email": "noahthomas56@stanford.edu",
+      "grad_year": 2027,
+      "major": "Political Science",
+      "interests": [
+        "Writing",
+        "Movies",
+        "Volunteering",
+        "Yoga",
+        "Meditation"
+      ],
+      "sex": "female",
+      "dorm": "Branner",
+      "involvements": "ACM",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401450+00:00"
+    },
+    {
+      "id": "emmathomas57",
+      "first_name": "Emma",
+      "last_name": "Thomas",
+      "email": "emmathomas57@stanford.edu",
+      "grad_year": 2024,
+      "major": "Economics",
+      "interests": [
+        "Photography",
+        "Chess"
+      ],
+      "sex": "female",
+      "dorm": "GovCo",
+      "involvements": "Instrumental music",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401454+00:00"
+    },
+    {
+      "id": "elizabethscott58",
+      "first_name": "Elizabeth",
+      "last_name": "Scott",
+      "email": "elizabethscott58@stanford.edu",
+      "grad_year": 2028,
+      "major": "English",
+      "interests": [
+        "Movies",
+        "Travel"
+      ],
+      "sex": "male",
+      "dorm": "Stern",
+      "involvements": "Research Lab",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401458+00:00"
+    },
+    {
+      "id": "samjackson59",
+      "first_name": "Sam",
+      "last_name": "Jackson",
+      "email": "samjackson59@stanford.edu",
+      "grad_year": 2024,
+      "major": "Engineering",
+      "interests": [
+        "Gaming",
+        "Music",
+        "Hiking",
+        "Research"
+      ],
+      "sex": "non-binary",
+      "dorm": "Crothers",
+      "involvements": "Theater",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401462+00:00"
+    },
+    {
+      "id": "morganmoore60",
+      "first_name": "Morgan",
+      "last_name": "Moore",
+      "email": "morganmoore60@stanford.edu",
+      "grad_year": 2030,
+      "major": "Medicine",
+      "interests": [
+        "Reading",
+        "Meditation",
+        "Sports",
+        "Cooking"
+      ],
+      "sex": "male",
+      "dorm": "GovCo",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401466+00:00"
+    },
+    {
+      "id": "liamgarcia61",
+      "first_name": "Liam",
+      "last_name": "Garcia",
+      "email": "liamgarcia61@stanford.edu",
+      "grad_year": 2025,
+      "major": "Physics",
+      "interests": [
+        "Chess",
+        "Art",
+        "Writing",
+        "Theater",
+        "Entrepreneurship"
+      ],
+      "sex": "non-binary",
+      "dorm": "Wilbur",
+      "involvements": "Vocal",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401470+00:00"
+    },
+    {
+      "id": "elizabethrobinson62",
+      "first_name": "Elizabeth",
+      "last_name": "Robinson",
+      "email": "elizabethrobinson62@stanford.edu",
+      "grad_year": 2026,
+      "major": "Engineering",
+      "interests": [
+        "Dancing",
+        "Reading"
+      ],
+      "sex": "non-binary",
+      "dorm": "GovCo",
+      "involvements": "Club Sports",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401473+00:00"
+    },
+    {
+      "id": "caseyhernandez63",
+      "first_name": "Casey",
+      "last_name": "Hernandez",
+      "email": "caseyhernandez63@stanford.edu",
+      "grad_year": 2024,
+      "major": "Music",
+      "interests": [
+        "Art"
+      ],
+      "sex": "female",
+      "dorm": "Casper",
+      "involvements": "Research Lab",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401476+00:00"
+    },
+    {
+      "id": "alexanderjones64",
+      "first_name": "Alexander",
+      "last_name": "Jones",
+      "email": "alexanderjones64@stanford.edu",
+      "grad_year": 2029,
+      "major": "Political Science",
+      "interests": [
+        "Fitness"
+      ],
+      "sex": "female",
+      "dorm": "Stern",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401480+00:00"
+    },
+    {
+      "id": "oliviamartinez65",
+      "first_name": "Olivia",
+      "last_name": "Martinez",
+      "email": "oliviamartinez65@stanford.edu",
+      "grad_year": 2024,
+      "major": "Engineering",
+      "interests": [
+        "Hiking",
+        "Entrepreneurship",
+        "Gaming",
+        "Meditation",
+        "Chess"
+      ],
+      "sex": "male",
+      "dorm": "Crothers",
+      "involvements": "Vocal",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401485+00:00"
+    },
+    {
+      "id": "ameliatorres66",
+      "first_name": null,
+      "last_name": "Torres",
+      "email": "ameliatorres66@stanford.edu",
+      "grad_year": 2027,
+      "major": "Business",
+      "interests": [
+        "Chess",
+        "Dancing",
+        "Music"
+      ],
+      "sex": "male",
+      "dorm": "Lagunita Court",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401489+00:00"
+    },
+    {
+      "id": "emilyflores67",
+      "first_name": "Emily",
+      "last_name": "Flores",
+      "email": "emilyflores67@stanford.edu",
+      "grad_year": 2024,
+      "major": "Psychology",
+      "interests": [
+        "Writing",
+        "Entrepreneurship",
+        "Dancing",
+        "Travel"
+      ],
+      "sex": "non-binary",
+      "dorm": "Lagunita Court",
+      "involvements": "Theater",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401493+00:00"
+    },
+    {
+      "id": "charlottegarcia68",
+      "first_name": "Charlotte",
+      "last_name": "Garcia",
+      "email": "charlottegarcia68@stanford.edu",
+      "grad_year": 2027,
+      "major": "Philosophy",
+      "interests": [
+        "Travel"
+      ],
+      "sex": "female",
+      "dorm": "Branner",
+      "involvements": "Newspaper",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401496+00:00"
+    },
+    {
+      "id": "noahramirez69",
+      "first_name": "Noah",
+      "last_name": "Ramirez",
+      "email": "noahramirez69@stanford.edu",
+      "grad_year": 2030,
+      "major": "Engineering",
+      "interests": [
+        "Yoga",
+        "Gaming",
+        "Theater"
+      ],
+      "sex": "female",
+      "dorm": "GovCo",
+      "involvements": "Newspaper",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401499+00:00"
+    },
+    {
+      "id": "alextorres70",
+      "first_name": "Alex",
+      "last_name": "Torres",
+      "email": "alextorres70@stanford.edu",
+      "grad_year": 2027,
+      "major": "Music",
+      "interests": [
+        "Chess",
+        "Research",
+        "Entrepreneurship"
+      ],
+      "sex": "male",
+      "dorm": "Stern",
+      "involvements": "Instrumental music",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401503+00:00"
+    },
+    {
+      "id": "abigailrodriguez71",
+      "first_name": "Abigail",
+      "last_name": "Rodriguez",
+      "email": "abigailrodriguez71@stanford.edu",
+      "grad_year": 2026,
+      "major": "Business",
+      "interests": [
+        "Chess"
+      ],
+      "sex": "non-binary",
+      "dorm": "Casper",
+      "involvements": "Dance Groups",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401506+00:00"
+    },
+    {
+      "id": "liamnguyen72",
+      "first_name": "Liam",
+      "last_name": "Nguyen",
+      "email": "liamnguyen72@stanford.edu",
+      "grad_year": 2024,
+      "major": "Music",
+      "interests": [
+        "Gaming",
+        "Cooking",
+        "Research",
+        "Hiking"
+      ],
+      "sex": "male",
+      "dorm": "Stern",
+      "involvements": "Dance Groups",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401510+00:00"
+    },
+    {
+      "id": "masonallen73",
+      "first_name": "Mason",
+      "last_name": "Allen",
+      "email": "masonallen73@stanford.edu",
+      "grad_year": 2025,
+      "major": "Business",
+      "interests": [
+        "Chess",
+        "Writing"
+      ],
+      "sex": "non-binary",
+      "dorm": "Florence Moore",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401513+00:00"
+    },
+    {
+      "id": "caseyjackson74",
+      "first_name": "Casey",
+      "last_name": "Jackson",
+      "email": "caseyjackson74@stanford.edu",
+      "grad_year": 2030,
+      "major": "Music",
+      "interests": [
+        "Hiking",
+        "Meditation",
+        "Research"
+      ],
+      "sex": "female",
+      "dorm": "Crothers",
+      "involvements": "Entrepreneurship",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401517+00:00"
+    },
+    {
+      "id": "masonharris75",
+      "first_name": "Mason",
+      "last_name": "Harris",
+      "email": "masonharris75@stanford.edu",
+      "grad_year": 2026,
+      "major": "Art",
+      "interests": [
+        "Meditation",
+        "Theater"
+      ],
+      "sex": "female",
+      "dorm": "Branner",
+      "involvements": "Club Sports",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401520+00:00"
+    },
+    {
+      "id": "taylorthompson76",
+      "first_name": "Taylor",
+      "last_name": "Thompson",
+      "email": "taylorthompson76@stanford.edu",
+      "grad_year": 2029,
+      "major": "Medicine",
+      "interests": [
+        "Research",
+        "Sports"
+      ],
+      "sex": "non-binary",
+      "dorm": "Wilbur",
+      "involvements": "Robotics",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401524+00:00"
+    },
+    {
+      "id": "avamiller77",
+      "first_name": null,
+      "last_name": "Miller",
+      "email": "avamiller77@stanford.edu",
+      "grad_year": 2030,
+      "major": "Business",
+      "interests": [
+        "Volunteering",
+        "Cooking"
+      ],
+      "sex": "male",
+      "dorm": "Casper",
+      "involvements": "Entrepreneurship",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401530+00:00"
+    },
+    {
+      "id": "emmawhite78",
+      "first_name": "Emma",
+      "last_name": "White",
+      "email": "emmawhite78@stanford.edu",
+      "grad_year": 2028,
+      "major": "Art",
+      "interests": [
+        "Theater",
+        "Yoga",
+        "Research",
+        "Sports",
+        "Reading"
+      ],
+      "sex": "non-binary",
+      "dorm": "GovCo",
+      "involvements": "Newspaper",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401534+00:00"
+    },
+    {
+      "id": "noahthomas79",
+      "first_name": "Noah",
+      "last_name": "Thomas",
+      "email": "noahthomas79@stanford.edu",
+      "grad_year": 2029,
+      "major": "Mathematics",
+      "interests": [
+        "Entrepreneurship"
+      ],
+      "sex": "female",
+      "dorm": "GovCo",
+      "involvements": "Sustainability",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401537+00:00"
+    },
+    {
+      "id": "jordanwilliams80",
+      "first_name": "Jordan",
+      "last_name": "Williams",
+      "email": "jordanwilliams80@stanford.edu",
+      "grad_year": 2026,
+      "major": "Engineering",
+      "interests": [
+        "Cooking",
+        "Art",
+        "Writing",
+        "Volunteering"
+      ],
+      "sex": "female",
+      "dorm": "Branner",
+      "involvements": "Newspaper",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401541+00:00"
+    },
+    {
+      "id": "dakotalopez81",
+      "first_name": "Dakota",
+      "last_name": null,
+      "email": "dakotalopez81@stanford.edu",
+      "grad_year": 2024,
+      "major": "Art",
+      "interests": [
+        "Cooking",
+        "Art",
+        "Entrepreneurship",
+        "Dancing",
+        "Fitness"
+      ],
+      "sex": "non-binary",
+      "dorm": "Stern",
+      "involvements": "ACM",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401544+00:00"
+    },
+    {
+      "id": "alexandermartin82",
+      "first_name": "Alexander",
+      "last_name": "Martin",
+      "email": "alexandermartin82@stanford.edu",
+      "grad_year": 2029,
+      "major": "Biology",
+      "interests": [
+        "Hiking",
+        "Volunteering",
+        "Dancing",
+        "Entrepreneurship",
+        "Chess"
+      ],
+      "sex": "male",
+      "dorm": "Casper",
+      "involvements": "Newspaper",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401549+00:00"
+    },
+    {
+      "id": "masonmiller83",
+      "first_name": "Mason",
+      "last_name": "Miller",
+      "email": "masonmiller83@stanford.edu",
+      "grad_year": 2025,
+      "major": "Art",
+      "interests": [
+        "Hiking",
+        "Music",
+        "Theater"
+      ],
+      "sex": "non-binary",
+      "dorm": "Branner",
+      "involvements": "Vocal",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401552+00:00"
+    },
+    {
+      "id": "morgangreen84",
+      "first_name": "Morgan",
+      "last_name": "Green",
+      "email": "morgangreen84@stanford.edu",
+      "grad_year": 2029,
+      "major": "Medicine",
+      "interests": [
+        "Art",
+        "Photography",
+        "Dancing"
+      ],
+      "sex": "female",
+      "dorm": "Stern",
+      "involvements": "Vocal",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401556+00:00"
+    },
+    {
+      "id": "sammiller85",
+      "first_name": "Sam",
+      "last_name": "Miller",
+      "email": "sammiller85@stanford.edu",
+      "grad_year": 2029,
+      "major": "Engineering",
+      "interests": [
+        "Movies",
+        "Cooking",
+        "Reading",
+        "Hiking",
+        "Yoga"
+      ],
+      "sex": "female",
+      "dorm": "Casper",
+      "involvements": "Entrepreneurship",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401560+00:00"
+    },
+    {
+      "id": "samtorres86",
+      "first_name": "Sam",
+      "last_name": "Torres",
+      "email": "samtorres86@stanford.edu",
+      "grad_year": 2026,
+      "major": "Psychology",
+      "interests": [
+        "Yoga",
+        "Gaming",
+        "Entrepreneurship"
+      ],
+      "sex": "male",
+      "dorm": "Crothers",
+      "involvements": "ACM",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401565+00:00"
+    },
+    {
+      "id": "riverramirez87",
+      "first_name": "River",
+      "last_name": "Ramirez",
+      "email": "riverramirez87@stanford.edu",
+      "grad_year": 2030,
+      "major": "Philosophy",
+      "interests": [
+        "Fitness",
+        "Gaming",
+        "Entrepreneurship"
+      ],
+      "sex": "male",
+      "dorm": "Wilbur",
+      "involvements": "Entrepreneurship",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401569+00:00"
+    },
+    {
+      "id": "emmaflores88",
+      "first_name": "Emma",
+      "last_name": "Flores",
+      "email": "emmaflores88@stanford.edu",
+      "grad_year": 2027,
+      "major": "Philosophy",
+      "interests": [
+        "Chess"
+      ],
+      "sex": "male",
+      "dorm": "Stern",
+      "involvements": "ACM",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401572+00:00"
+    },
+    {
+      "id": "riverjones89",
+      "first_name": "River",
+      "last_name": "Jones",
+      "email": "riverjones89@stanford.edu",
+      "grad_year": 2029,
+      "major": "Business",
+      "interests": [
+        "Gaming",
+        "Cooking",
+        "Sports",
+        "Fitness"
+      ],
+      "sex": "non-binary",
+      "dorm": "Crothers",
+      "involvements": "Sustainability",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401576+00:00"
+    },
+    {
+      "id": "averytaylor90",
+      "first_name": "Avery",
+      "last_name": "Taylor",
+      "email": "averytaylor90@stanford.edu",
+      "grad_year": 2028,
+      "major": "Chemistry",
+      "interests": [
+        "Volunteering",
+        "Meditation",
+        "Cooking",
+        "Chess",
+        "Gaming"
+      ],
+      "sex": "female",
+      "dorm": "Casper",
+      "involvements": "Newspaper",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401580+00:00"
+    },
+    {
+      "id": "oliviawilliams91",
+      "first_name": "Olivia",
+      "last_name": "Williams",
+      "email": "oliviawilliams91@stanford.edu",
+      "grad_year": 2029,
+      "major": "Philosophy",
+      "interests": [
+        "Movies",
+        "Gaming"
+      ],
+      "sex": "male",
+      "dorm": "Casper",
+      "involvements": "ACM",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401583+00:00"
+    },
+    {
+      "id": "miabrown92",
+      "first_name": "Mia",
+      "last_name": "Brown",
+      "email": "miabrown92@stanford.edu",
+      "grad_year": 2027,
+      "major": "Psychology",
+      "interests": [
+        "Photography"
+      ],
+      "sex": "male",
+      "dorm": "GovCo",
+      "involvements": "ACM",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401587+00:00"
+    },
+    {
+      "id": "jordanbrown93",
+      "first_name": "Jordan",
+      "last_name": "Brown",
+      "email": "jordanbrown93@stanford.edu",
+      "grad_year": 2030,
+      "major": "History",
+      "interests": [
+        "Reading",
+        "Fitness"
+      ],
+      "sex": "male",
+      "dorm": "Florence Moore",
+      "involvements": "Vocal",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401590+00:00"
+    },
+    {
+      "id": "riverwhite94",
+      "first_name": "River",
+      "last_name": "White",
+      "email": "riverwhite94@stanford.edu",
+      "grad_year": 2030,
+      "major": "Chemistry",
+      "interests": [
+        "Cooking",
+        "Fitness"
+      ],
+      "sex": "non-binary",
+      "dorm": "Lagunita Court",
+      "involvements": "Research Lab",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401594+00:00"
+    },
+    {
+      "id": "jordanrodriguez95",
+      "first_name": "Jordan",
+      "last_name": "Rodriguez",
+      "email": "jordanrodriguez95@stanford.edu",
+      "grad_year": 2024,
+      "major": "Philosophy",
+      "interests": [
+        "Dancing",
+        "Sports"
+      ],
+      "sex": "male",
+      "dorm": "Branner",
+      "involvements": "Entrepreneurship",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401597+00:00"
+    },
+    {
+      "id": "quinnjones96",
+      "first_name": "Quinn",
+      "last_name": null,
+      "email": "quinnjones96@stanford.edu",
+      "grad_year": 2027,
+      "major": "Business",
+      "interests": [
+        "Art",
+        "Sports",
+        "Writing",
+        "Hiking",
+        "Entrepreneurship"
+      ],
+      "sex": "female",
+      "dorm": "GovCo",
+      "involvements": "ACM",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401601+00:00"
+    },
+    {
+      "id": "masonramirez97",
+      "first_name": "Mason",
+      "last_name": null,
+      "email": "masonramirez97@stanford.edu",
+      "grad_year": 2027,
+      "major": "Physics",
+      "interests": [
+        "Yoga"
+      ],
+      "sex": "female",
+      "dorm": "Casper",
+      "involvements": "Dance Groups",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401605+00:00"
+    },
+    {
+      "id": "oliviaflores98",
+      "first_name": "Olivia",
+      "last_name": "Flores",
+      "email": "oliviaflores98@stanford.edu",
+      "grad_year": 2028,
+      "major": "History",
+      "interests": [
+        "Chess",
+        "Volunteering",
+        "Gaming",
+        "Fitness",
+        "Photography"
+      ],
+      "sex": "female",
+      "dorm": "Crothers",
+      "involvements": "ACM",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401609+00:00"
+    },
+    {
+      "id": "benjaminwhite99",
+      "first_name": "Benjamin",
+      "last_name": "White",
+      "email": "benjaminwhite99@stanford.edu",
+      "grad_year": 2030,
+      "major": "Business",
+      "interests": [
+        "Volunteering",
+        "Yoga",
+        "Dancing"
+      ],
+      "sex": "female",
+      "dorm": "Wilbur",
+      "involvements": "Dance Groups",
+      "close_friends": [],
+      "survey_completed": true,
+      "created_at": "2025-11-17T06:27:10.401612+00:00"
+    }
+  ],
+  "friendships": [],
+  "matches": []
+}
