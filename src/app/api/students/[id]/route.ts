@@ -67,11 +67,9 @@ export async function PATCH(request: Request, context: Params) {
     .update({
       grad_year: parsed.data.grad_year,
       sex: parsed.data.sex,
-      major: parsed.data.major,
       dorm: parsed.data.dorm,
-      interests: parsed.data.hobbies,
-      involvements: parsed.data.involvements,
       close_friends: parsed.data.close_friends,
+      uc_berkeley_choice: parsed.data.uc_berkeley_choice,
       survey_completed: true,
     })
     .eq("id", idResult.data)

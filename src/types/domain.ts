@@ -6,6 +6,7 @@ export type Student = {
   first_name: string | null;
   last_name: string | null;
   email: string;
+  user_id: string | null;
   grad_year: number | null;
   major: string | null;
   interests: string[] | null;
@@ -13,6 +14,7 @@ export type Student = {
   dorm: string | null;
   involvements: string | null;
   close_friends: string[] | null;
+  uc_berkeley_choice: "no_friends" | "uc_berkeley" | null;
   survey_completed: boolean;
   created_at: string;
 };

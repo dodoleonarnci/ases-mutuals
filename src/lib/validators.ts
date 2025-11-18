@@ -27,11 +27,9 @@ export const signupInsertSchema = z.object({
 export const studentSurveySchema = z.object({
   grad_year: z.number().int().min(2024).max(2030),
   sex: z.enum(["male", "female", "non-binary"]),
-  major: z.string().min(1, "Please select your major category"),
   dorm: z.string().min(1, "Dorm is required"),
-  hobbies: z.array(z.string().min(1)).min(1).max(10),
-  involvements: z.string().min(3, "Tell us about at least one involvement"),
   close_friends: z.array(z.string().min(1)).min(5).max(20),
+  uc_berkeley_choice: z.enum(["no_friends", "uc_berkeley"]),
 });
 
 export const friendshipInsertSchema = z

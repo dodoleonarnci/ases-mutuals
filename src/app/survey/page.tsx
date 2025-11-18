@@ -5,42 +5,37 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { isValidStudentIdentifier } from "@/lib/identifiers";
+import studentNamesData from "@/data/studentNames.json";
+
+interface StudentData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  user_id: string;
+}
+
+interface StudentDisplay {
+  name: string;
+  email: string;
+  user_id: string;
+}
 
 const CLASS_YEARS = ["2025", "2026", "2027", "2028", "2029", "2030"];
-const MAJOR_CATEGORIES = [
-  "Engineering",
-  "Humanities & Arts",
-  "Sciences",
-  "Social Sciences",
-  "Business & Economics",
-  "Undeclared / Other",
-];
 const DORM_OPTIONS = [
-  "Wilbur",
-  "Stern",
-  "Governor's Corner",
-  "Ng House",
+  "Crothers",
+  "FloMo",
+  "Casper Quad",
   "FroSoCo",
   "Branner",
-  "Lagunita",
+  "GovCo",
+  "West Lag",
+  "Stern",
+  "Wilbur",
   "Roble",
-  "Mirrielees",
+  "Toyon",
+  "Ujamaa",
   "Off Campus",
 ];
-const HOBBY_OPTIONS = [
-  "Music",
-  "Dance",
-  "Sports",
-  "Fitness",
-  "Cooking",
-  "Gaming",
-  "Volunteering",
-  "Photography",
-  "Entrepreneurship",
-  "Reading",
-];
-
-const MAX_HOBBIES = 10;
 const MIN_FRIENDS = 5;
 const MAX_FRIENDS = 20;
 
@@ -57,14 +52,12 @@ export default function SurveyPage() {
   const [email, setEmail] = useState<string | null>(null);
   const [gradYear, setGradYear] = useState("");
   const [sex, setSex] = useState("");
-  const [major, setMajor] = useState("");
   const [dorm, setDorm] = useState("");
-  const [involvements, setInvolvements] = useState("");
-  const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
-  const [otherHobby, setOtherHobby] = useState("");
   const [friendInput, setFriendInput] = useState("");
   const [closeFriends, setCloseFriends] = useState<string[]>([]);
   const [existingNames, setExistingNames] = useState<string[]>([]);
+  const [allStudentData, setAllStudentData] = useState<StudentDisplay[]>([]);
+  const [ucBerkeleyChoice, setUcBerkeleyChoice] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "success">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -95,20 +88,14 @@ export default function SurveyPage() {
       if (student.sex) {
         setSex(student.sex);
       }
-      if (student.major) {
-        setMajor(student.major);
-      }
       if (student.dorm) {
         setDorm(student.dorm);
       }
-      if (student.interests) {
-        setSelectedHobbies(student.interests);
-      }
-      if (student.involvements) {
-        setInvolvements(student.involvements);
-      }
       if (student.close_friends) {
         setCloseFriends(student.close_friends);
+      }
+      if (student.uc_berkeley_choice) {
+        setUcBerkeleyChoice(student.uc_berkeley_choice);
       }
 
       setStatus("idle");
@@ -118,21 +105,58 @@ export default function SurveyPage() {
   }, [studentId]);
 
   useEffect(() => {
+    // Load static student names from JSON
+    const staticStudents: StudentDisplay[] = (studentNamesData as StudentData[]).map(
+      (student) => ({
+        name: `${student.first_name} ${student.last_name}`.trim(),
+        email: student.email,
+        user_id: student.user_id,
+      })
+    );
+
     const fetchNames = async () => {
       const response = await fetch("/api/students");
       const payload = await response.json();
 
-      if (!response.ok) {
-        return;
+      const apiStudents: StudentDisplay[] = [];
+      if (response.ok && payload.students) {
+        apiStudents.push(
+          ...(payload.students ?? []).map(
+            (student: {
+              first_name: string | null;
+              last_name: string | null;
+              email: string;
+              user_id?: string | null;
+            }) => {
+              const fullName = [student.first_name, student.last_name]
+                .filter(Boolean)
+                .join(" ")
+                .trim();
+              return {
+                name: fullName.length ? fullName : student.email,
+                email: student.email,
+                user_id: student.user_id || "",
+              };
+            }
+          )
+        );
       }
 
-      const names: string[] = (payload.students ?? [])
-        .map((student: { first_name: string | null; last_name: string | null; email: string }) => {
-          const fullName = [student.first_name, student.last_name].filter(Boolean).join(" ").trim();
-          return fullName.length ? fullName : student.email;
-        })
-        .filter((name: string): name is string => Boolean(name));
+      // Combine static and API students, removing duplicates by email
+      const emailSet = new Set<string>();
+      const combined: StudentDisplay[] = [];
 
+      [...staticStudents, ...apiStudents].forEach((student) => {
+        if (!emailSet.has(student.email)) {
+          emailSet.add(student.email);
+          combined.push(student);
+        }
+      });
+
+      setAllStudentData(combined);
+
+      // Keep existingNames for backward compatibility
+      const names = combined.map((s) => s.name);
       const unique = Array.from(new Set(names));
       setExistingNames(unique);
     };
@@ -145,43 +169,48 @@ export default function SurveyPage() {
       return [];
     }
 
-    const normalized = friendInput.toLowerCase();
-    return existingNames
-      .filter(
-        (name) => name.toLowerCase().includes(normalized) && !closeFriends.includes(name),
-      )
-      .slice(0, 5);
-  }, [existingNames, friendInput, closeFriends]);
+    const normalized = friendInput.toLowerCase().trim();
+    const closeFriendsSet = new Set(closeFriends);
 
-  const handleHobbySelection = (value: string) => {
-    if (!value || selectedHobbies.includes(value)) {
-      return;
-    }
+    // Filter and score suggestions
+    const scored = allStudentData
+      .filter((student) => !closeFriendsSet.has(student.name))
+      .map((student) => {
+        const nameLower = student.name.toLowerCase();
+        const emailLower = student.email.toLowerCase();
+        
+        // Check if input matches name or email
+        const nameMatch = nameLower.includes(normalized);
+        const emailMatch = emailLower.includes(normalized);
+        
+        if (!nameMatch && !emailMatch) {
+          return null;
+        }
 
-    if (selectedHobbies.length >= MAX_HOBBIES) {
-      setError(`You can list up to ${MAX_HOBBIES} hobbies.`);
-      return;
-    }
+        // Calculate score for sorting (exact matches first, then starts with, then contains)
+        let score = 0;
+        if (nameLower === normalized || emailLower === normalized) {
+          score = 100; // Exact match
+        } else if (nameLower.startsWith(normalized) || emailLower.startsWith(normalized)) {
+          score = 50; // Starts with
+        } else {
+          score = 10; // Contains
+        }
 
-    setSelectedHobbies((prev) => [...prev, value]);
-    setError(null);
-  };
+        // Boost score if name matches (prefer name matches over email matches)
+        if (nameMatch && !emailMatch) {
+          score += 5;
+        }
 
-  const handleOtherHobbyAdd = () => {
-    const trimmed = otherHobby.trim();
-    if (!trimmed || selectedHobbies.includes(trimmed)) {
-      return;
-    }
+        return { student, score };
+      })
+      .filter((item): item is { student: StudentDisplay; score: number } => item !== null)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8)
+      .map((item) => item.student);
 
-    if (selectedHobbies.length >= MAX_HOBBIES) {
-      setError(`You can list up to ${MAX_HOBBIES} hobbies.`);
-      return;
-    }
-
-    setSelectedHobbies((prev) => [...prev, trimmed]);
-    setOtherHobby("");
-    setError(null);
-  };
+    return scored;
+  }, [allStudentData, friendInput, closeFriends]);
 
   const handleFriendAdd = (name: string) => {
     if (!name.trim() || closeFriends.includes(name)) {
@@ -227,11 +256,9 @@ export default function SurveyPage() {
       body: JSON.stringify({
         grad_year: Number(gradYear),
         sex,
-        major,
         dorm,
-        hobbies: selectedHobbies,
-        involvements: involvements.trim(),
         close_friends: closeFriends,
+        uc_berkeley_choice: ucBerkeleyChoice,
       }),
     });
 
@@ -251,12 +278,10 @@ export default function SurveyPage() {
     status === "loading" ||
     !gradYear ||
     !sex ||
-    !major ||
     !dorm ||
-    !involvements.trim() ||
-    selectedHobbies.length === 0 ||
     closeFriends.length < MIN_FRIENDS ||
-    closeFriends.length > MAX_FRIENDS;
+    closeFriends.length > MAX_FRIENDS ||
+    !ucBerkeleyChoice;
 
   if (!studentId) {
     return (
@@ -338,24 +363,7 @@ export default function SurveyPage() {
             </label>
           </div>
 
-          <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            <label className="text-sm font-medium text-zinc-800">
-              Major
-              <select
-                value={major}
-                onChange={(event) => setMajor(event.target.value)}
-                required
-                className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-              >
-                <option value="">Select major</option>
-                {MAJOR_CATEGORIES.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-            </label>
-
+          <div className="mt-6">
             <label className="text-sm font-medium text-zinc-800">
               Dorm
               <select
@@ -374,80 +382,6 @@ export default function SurveyPage() {
             </label>
           </div>
 
-          <div className="mt-6">
-            <p className="text-sm font-medium text-zinc-800">Hobbies</p>
-            <p className="text-xs text-zinc-500">Pick from the list or add your own.</p>
-            <div className="mt-3 flex flex-wrap gap-3">
-              <select
-                onChange={(event) => {
-                  handleHobbySelection(event.target.value);
-                  event.target.value = "";
-                }}
-                className="rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-                value=""
-              >
-                <option value="">Select hobby</option>
-                {HOBBY_OPTIONS.map((hobby) => (
-                  <option key={hobby} value={hobby}>
-                    {hobby}
-                  </option>
-                ))}
-              </select>
-
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={otherHobby}
-                  onChange={(event) => setOtherHobby(event.target.value)}
-                  placeholder="Other hobby"
-                  className="rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-                />
-                <button
-                  type="button"
-                  onClick={handleOtherHobbyAdd}
-                  className="rounded-2xl border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-600 transition hover:border-emerald-300 hover:text-emerald-500"
-                >
-                  Add
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              {selectedHobbies.map((hobby) => (
-                <span
-                  key={hobby}
-                  className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-sm text-emerald-700"
-                >
-                  {hobby}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setSelectedHobbies((prev) => prev.filter((item) => item !== hobby))
-                    }
-                    className="text-xs text-emerald-500"
-                    aria-label={`Remove ${hobby}`}
-                  >
-                    ✕
-                  </button>
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-8">
-            <label className="text-sm font-medium text-zinc-800">
-              On-campus involvements
-              <textarea
-                value={involvements}
-                onChange={(event) => setInvolvements(event.target.value)}
-                rows={4}
-                required
-                placeholder="Clubs, roles, teams, or anything else you're involved in."
-                className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-              />
-            </label>
-          </div>
-
           <div className="mt-8">
             <p className="text-sm font-medium text-zinc-800">Name 5-20 close friends</p>
             <p className="text-xs text-zinc-500">
@@ -462,7 +396,11 @@ export default function SurveyPage() {
                 onKeyDown={(event) => {
                   if (event.key === "Enter") {
                     event.preventDefault();
-                    handleFriendAdd(friendSuggestions[0] ?? friendInput);
+                    if (friendSuggestions.length > 0) {
+                      handleFriendAdd(friendSuggestions[0].name);
+                    } else if (friendInput.trim()) {
+                      handleFriendAdd(friendInput);
+                    }
                   }
                 }}
                 placeholder="Add a friend"
@@ -470,16 +408,16 @@ export default function SurveyPage() {
               />
 
               {friendSuggestions.length > 0 && (
-                <ul className="absolute z-10 mt-2 w-full rounded-2xl border border-zinc-200 bg-white text-sm shadow-lg">
-              {friendSuggestions.map((name: string) => (
-                    <li key={name}>
+                <ul className="absolute z-10 mt-2 w-full max-h-64 overflow-y-auto rounded-2xl border border-zinc-200 bg-white text-sm shadow-lg">
+                  {friendSuggestions.map((student) => (
+                    <li key={`${student.name}-${student.email}`}>
                       <button
                         type="button"
-                        onClick={() => handleFriendAdd(name)}
-                        className="flex w-full items-center justify-between px-4 py-2 text-left text-zinc-700 transition hover:bg-emerald-50"
+                        onClick={() => handleFriendAdd(student.name)}
+                        className="flex w-full flex-col items-start px-4 py-2.5 text-left text-zinc-700 transition hover:bg-emerald-50"
                       >
-                        {name}
-                        <span className="text-xs text-zinc-400">Add</span>
+                        <span className="font-medium">{student.name}</span>
+                        <span className="text-xs text-zinc-500">{student.email}</span>
                       </button>
                     </li>
                   ))}
@@ -509,6 +447,22 @@ export default function SurveyPage() {
                 </span>
               ))}
             </div>
+          </div>
+
+          <div className="mt-8">
+            <label className="text-sm font-medium text-zinc-800">
+              Would you rather have no friends or go to UC Berkeley?
+              <select
+                value={ucBerkeleyChoice}
+                onChange={(event) => setUcBerkeleyChoice(event.target.value)}
+                required
+                className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+              >
+                <option value="">Select an option</option>
+                <option value="no_friends">No friends</option>
+                <option value="uc_berkeley">Go to UC Berkeley</option>
+              </select>
+            </label>
           </div>
 
           {error && (
