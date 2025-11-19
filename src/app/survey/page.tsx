@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -39,7 +39,7 @@ const DORM_OPTIONS = [
 const MIN_FRIENDS = 5;
 const MAX_FRIENDS = 20;
 
-export default function SurveyPage() {
+function SurveyPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rawStudentId = searchParams.get("studentId");
@@ -481,6 +481,24 @@ export default function SurveyPage() {
         </form>
       </div>
     </main>
+  );
+}
+
+export default function SurveyPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-gradient-to-b from-emerald-50 to-white px-6 py-16 text-zinc-900">
+          <div className="mx-auto max-w-3xl">
+            <div className="rounded-3xl border border-zinc-200 bg-white p-8 text-center">
+              <p className="text-base text-zinc-600">Loading survey...</p>
+            </div>
+          </div>
+        </main>
+      }
+    >
+      <SurveyPageContent />
+    </Suspense>
   );
 }
 
