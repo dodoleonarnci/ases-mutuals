@@ -24,7 +24,23 @@ export default function SignUpPage() {
         body: JSON.stringify({ email: email.trim().toLowerCase() }),
       });
 
-      const payload = await response.json();
+      // Check if response has content before parsing JSON
+      const contentType = response.headers.get("content-type");
+      const text = await response.text();
+      
+      let payload: any;
+      if (text && contentType?.includes("application/json")) {
+        try {
+          payload = JSON.parse(text);
+        } catch (parseError) {
+          throw new Error("Invalid response from server. Please try again.");
+        }
+      } else {
+        // If response is not JSON or is empty, create a payload with error
+        payload = text 
+          ? { error: text } 
+          : { error: "Unable to save signup. Please try again." };
+      }
 
       if (!response.ok) {
         throw new Error(payload.error ?? "Unable to save signup");
@@ -55,11 +71,7 @@ export default function SignUpPage() {
           >
             ← Back to landing page
           </Link>
-          <h1 className="mt-4 text-4xl font-bold tracking-tight text-zinc-950">Join the beta</h1>
-          <p className="mt-3 text-base text-zinc-600">
-            Leave your Stanford email and we&apos;ll follow up with onboarding instructions when
-            ASES Mutuals opens to new members.
-          </p>
+          <h1 className="mt-4 text-4xl font-bold tracking-tight text-zinc-950">Wanna get matched?</h1>
         </div>
 
         <form
@@ -88,7 +100,7 @@ export default function SignUpPage() {
             disabled={status === "loading"}
             className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {status === "loading" ? "Submitting..." : "Request access"}
+            {status === "loading" ? "Submitting..." : "Sign me up!"}
           </button>
 
           {message && (
