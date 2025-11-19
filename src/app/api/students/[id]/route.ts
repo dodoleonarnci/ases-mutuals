@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { parseJsonRequest } from "@/lib/api-helpers";
 import { studentIdentifierSchema } from "@/lib/identifiers";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { formatZodError, studentSurveySchema } from "@/lib/validators";
@@ -43,13 +44,11 @@ export async function PATCH(request: Request, context: Params) {
     return NextResponse.json({ error: "Student id must be a valid identifier" }, { status: 400 });
   }
 
-  let payload: unknown;
-
-  try {
-    payload = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+  const parseResult = await parseJsonRequest(request);
+  if (parseResult.error) {
+    return parseResult.error;
   }
+  const payload = parseResult.data;
 
   const parsed = studentSurveySchema.safeParse(payload);
 

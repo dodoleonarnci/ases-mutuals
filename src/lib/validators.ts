@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { studentIdentifierSchema } from "@/lib/identifiers";
-import type { FriendshipStatus, MatchStatus } from "@/types/domain";
+import type { MatchStatus } from "@/types/domain";
 
 const stanfordEmailSchema = z
   .string()
@@ -34,24 +34,10 @@ export const studentSurveySchema = z.object({
   uc_berkeley_choice: z.enum(["no_friends", "uc_berkeley"]),
 });
 
-export const friendshipInsertSchema = z
-  .object({
-    requester_id: studentIdentifierSchema,
-    addressee_id: studentIdentifierSchema,
-    status: z
-      .enum(["pending", "accepted", "rejected"] satisfies FriendshipStatus[])
-      .default("pending"),
-  })
-  .refine(
-    (data) => data.requester_id !== data.addressee_id,
-    "requester_id and addressee_id must be different",
-  );
-
 export const matchInsertSchema = z
   .object({
     student_a_id: studentIdentifierSchema,
     student_b_id: studentIdentifierSchema,
-    friendship_id: z.string().uuid().nullable().optional(),
     compatibility_score: z.number().min(0).max(100).default(0),
     status: z
       .enum(["proposed", "active", "inactive"] satisfies MatchStatus[])
@@ -65,7 +51,6 @@ export const matchInsertSchema = z
 export type StudentInsert = z.infer<typeof studentInsertSchema>;
 export type SignupInsert = z.infer<typeof signupInsertSchema>;
 export type StudentSurvey = z.infer<typeof studentSurveySchema>;
-export type FriendshipInsert = z.infer<typeof friendshipInsertSchema>;
 export type MatchInsert = z.infer<typeof matchInsertSchema>;
 
 export const formatZodError = (error: z.ZodError) =>

@@ -7,7 +7,7 @@ Next.js (frontend UI on Vercel)
       ↓ fetch("/api/*")
 Next.js API Routes (serverless functions)
       ↓ Supabase JS client (service role)
-Supabase Postgres (students, friendships, matches)
+Supabase Postgres (students, matches)
 ```
 
 The frontend only talks to internal API Routes so secrets stay on the server, while the serverless handlers speak directly to Supabase using typed models and zod validation.
@@ -51,8 +51,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="public-anon"
 `supabase/migrations/0001_init.sql` sets up:
 
 1. `students` – core profile data (`first_name`, `last_name`, `email`, `grad_year`, `major`, `interests` array).
-2. `friendships` – requester/addressee pairs with a `friendship_status` enum (`pending`, `accepted`, `rejected`).
-3. `matches` – algorithmic pairings, optional link to a friendship, score (0–100) and `match_status` enum (`proposed`, `active`, `inactive`).
+2. `matches` – algorithmic pairings with score (0–100) and `match_status` enum (`proposed`, `active`, `inactive`).
 
 Run the migration via the Supabase SQL editor or the CLI:
 
@@ -68,8 +67,7 @@ Located under `src/app/api/*` and automatically deployed as Vercel serverless fu
 | --- | --- | --- |
 | `/api/students` | `GET`, `POST` | List students or create a profile. |
 | `/api/students/[id]` | `GET` | Fetch a single student by their email handle (e.g. `sunet`). |
-| `/api/friendships` | `GET`, `POST` | Manage friendship requests between students. |
-| `/api/matches` | `GET`, `POST` | Persist match outcomes with optional friendship linkage. |
+| `/api/matches` | `GET`, `POST` | Persist match outcomes. |
 
 Each handler:
 
@@ -89,11 +87,11 @@ curl -X POST http://localhost:3000/api/students \
 
 - `src/app/page.tsx` documents the architecture, endpoints, and migration locations.
 - Tailwind CSS is pre-configured via `src/app/globals.css`.
-- When you are ready to build UI for matches/friendships, call the API Routes with `fetch("/api/...",{ cache: "no-store" })` to keep data fresh on Vercel.
+- When you are ready to build UI for matches, call the API Routes with `fetch("/api/...",{ cache: "no-store" })` to keep data fresh on Vercel.
 
 ## Recent additions
 
-- `src/matching/dataAccess.ts` can export the current Supabase state (students, friendships, matches) into a reproducible JSON snapshot at `src/matching/data/local_dataset.json`. Run it locally to capture production-like data before iterating on matching ideas.
+- `src/matching/dataAccess.ts` can export the current Supabase state (students, matches) into a reproducible JSON snapshot at `src/matching/data/local_dataset.json`. Run it locally to capture production-like data before iterating on matching ideas.
 - `src/matching/student.py` plus `src/matching/loader.py` define a simple Python sandbox that loads the cached dataset, converts rows into a typed `Student` helper, and wires up NumPy so you can prototype scoring, Sinkhorn/Hungarian matching, or other heuristics outside the Next.js runtime.
 - The dataset export + Python helpers form a tight feedback loop: fetch Supabase → experiment locally → push results back through `/api/matches` once you're satisfied.
 

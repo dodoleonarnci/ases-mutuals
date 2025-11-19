@@ -4,11 +4,11 @@ import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { isValidStudentIdentifier } from "@/lib/identifiers";
-import studentNamesData from "@/data/studentNames.json";
+import { isValidStudentIdentifier, deriveStudentIdentifier } from "@/lib/identifiers";
 
 interface StudentData {
   first_name: string;
+  middle_name: string;
   last_name: string;
   email: string;
   user_id: string;
@@ -18,6 +18,7 @@ interface StudentDisplay {
   name: string;
   email: string;
   user_id: string;
+  emailIdentifier: string; // email without @stanford.edu
 }
 
 const CLASS_YEARS = ["2025", "2026", "2027", "2028", "2029", "2030"];
@@ -37,7 +38,89 @@ const DORM_OPTIONS = [
   "Off Campus",
 ];
 const MIN_FRIENDS = 5;
-const MAX_FRIENDS = 20;
+
+/**
+ * Helper function to set student names with fallback logic.
+ * Prioritizes CSV data, falls back to database values.
+ */
+function setStudentNames(
+  csvStudent: StudentData | undefined,
+  dbStudent: { first_name: string | null; last_name: string | null },
+  setFirstName: (name: string) => void,
+  setLastName: (name: string) => void,
+) {
+  const firstName = csvStudent?.first_name || dbStudent.first_name || "";
+  const lastName = csvStudent?.last_name || dbStudent.last_name || "";
+  setFirstName(firstName);
+  setLastName(lastName);
+}
+
+/**
+ * Converts close_friends from names to email identifiers.
+ * Returns the converted array, or null if no conversion is needed.
+ */
+function convertFriendsToIdentifiers(
+  friends: string[],
+  emailToNameMap: Map<string, string>,
+  allStudentData: StudentDisplay[],
+): string[] | null {
+  if (emailToNameMap.size === 0 || friends.length === 0) {
+    return null;
+  }
+
+  // Check if conversion is needed (if any friend is not an email identifier)
+  const needsConversion = friends.some((friend) => {
+    // Check if it's already an email identifier (exists in map or matches pattern)
+    const isEmailIdentifier =
+      emailToNameMap.has(friend) ||
+      (/^[a-z0-9._-]+$/i.test(friend) && !friend.includes(" "));
+
+    // If it's a name (contains space or doesn't match identifier pattern), needs conversion
+    return !isEmailIdentifier;
+  });
+
+  if (!needsConversion) {
+    return null;
+  }
+
+  const converted = friends
+    .map((friend) => {
+      // If already an email identifier, keep it
+      if (emailToNameMap.has(friend)) {
+        return friend;
+      }
+
+      // Try to find by name
+      const student = allStudentData.find(
+        (s) =>
+          s.name.toLowerCase() === friend.toLowerCase() ||
+          s.email.toLowerCase() === friend.toLowerCase(),
+      );
+
+      if (student) {
+        return student.emailIdentifier;
+      }
+
+      // If not found, try to derive from email format
+      if (friend.includes("@")) {
+        return deriveStudentIdentifier(friend);
+      }
+
+      // If still not found, keep original (will be filtered out on submit)
+      return friend;
+    })
+    .filter((id) => emailToNameMap.has(id)); // Only keep valid identifiers
+
+  // Only return if conversion actually changed something
+  if (
+    converted.length !== friends.length ||
+    converted.some((id, idx) => id !== friends[idx])
+  ) {
+    return converted;
+  }
+
+  return null;
+}
 
 function SurveyPageContent() {
   const router = useRouter();
@@ -56,15 +139,57 @@ function SurveyPageContent() {
   const [sex, setSex] = useState("");
   const [dorm, setDorm] = useState("");
   const [friendInput, setFriendInput] = useState("");
-  const [closeFriends, setCloseFriends] = useState<string[]>([]);
-  const [existingNames, setExistingNames] = useState<string[]>([]);
+  const [closeFriends, setCloseFriends] = useState<string[]>([]); // Store email identifiers
+  const [csvStudentData, setCsvStudentData] = useState<StudentData[]>([]); // Raw CSV data
   const [allStudentData, setAllStudentData] = useState<StudentDisplay[]>([]);
+  const [emailToNameMap, setEmailToNameMap] = useState<Map<string, string>>(new Map()); // Map email identifier to display name
   const [ucBerkeleyChoice, setUcBerkeleyChoice] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "success">("idle");
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch CSV data once on mount
   useEffect(() => {
-    if (!studentId) {
+    const fetchCsvData = async () => {
+      const csvResponse = await fetch("/api/student-names");
+      const csvPayload = await csvResponse.json();
+      
+      if (csvResponse.ok && csvPayload.studentNames) {
+        const students = csvPayload.studentNames as StudentData[];
+        setCsvStudentData(students);
+        
+        // Build display data and email-to-name map
+        const csvStudents: StudentDisplay[] = [];
+        const emailToName = new Map<string, string>();
+        
+        students.forEach((student) => {
+          // Build full name including middle name
+          const nameParts = [student.first_name];
+          if (student.middle_name?.trim()) {
+            nameParts.push(student.middle_name.trim());
+          }
+          nameParts.push(student.last_name);
+          const name = nameParts.join(" ").trim();
+          const emailIdentifier = deriveStudentIdentifier(student.email);
+          // Map email identifier to display name
+          emailToName.set(emailIdentifier, name);
+          csvStudents.push({
+            name,
+            email: student.email,
+            user_id: student.user_id,
+            emailIdentifier,
+          });
+        });
+        
+        setAllStudentData(csvStudents);
+        setEmailToNameMap(emailToName);
+      }
+    };
+
+    fetchCsvData();
+  }, []);
+
+  useEffect(() => {
+    if (!studentId || csvStudentData.length === 0) {
       return;
     }
 
@@ -84,12 +209,13 @@ function SurveyPageContent() {
       const student = payload.student;
       setEmail(student.email);
 
-      if (student.first_name) {
-        setFirstName(student.first_name);
-      }
-      if (student.last_name) {
-        setLastName(student.last_name);
-      }
+      // Use CSV data to auto-fill first and last name
+      const csvStudent = csvStudentData.find(
+        (s) => s.email.toLowerCase() === student.email?.toLowerCase()
+      );
+      
+      setStudentNames(csvStudent, student, setFirstName, setLastName);
+
       if (student.grad_year) {
         setGradYear(String(student.grad_year));
       }
@@ -100,6 +226,7 @@ function SurveyPageContent() {
         setDorm(student.dorm);
       }
       if (student.close_friends) {
+        // Store raw close_friends - will be converted to email identifiers in another useEffect
         setCloseFriends(student.close_friends);
       }
       if (student.uc_berkeley_choice) {
@@ -110,67 +237,20 @@ function SurveyPageContent() {
     };
 
     fetchStudent();
-  }, [studentId]);
+  }, [studentId, csvStudentData]);
 
+
+  // Convert close_friends from names to email identifiers (for backward compatibility)
   useEffect(() => {
-    // Load static student names from JSON
-    const staticStudents: StudentDisplay[] = (studentNamesData as StudentData[]).map(
-      (student) => ({
-        name: `${student.first_name} ${student.last_name}`.trim(),
-        email: student.email,
-        user_id: student.user_id,
-      })
+    const converted = convertFriendsToIdentifiers(
+      closeFriends,
+      emailToNameMap,
+      allStudentData,
     );
-
-    const fetchNames = async () => {
-      const response = await fetch("/api/students");
-      const payload = await response.json();
-
-      const apiStudents: StudentDisplay[] = [];
-      if (response.ok && payload.students) {
-        apiStudents.push(
-          ...(payload.students ?? []).map(
-            (student: {
-              first_name: string | null;
-              last_name: string | null;
-              email: string;
-              user_id?: string | null;
-            }) => {
-              const fullName = [student.first_name, student.last_name]
-                .filter(Boolean)
-                .join(" ")
-                .trim();
-              return {
-                name: fullName.length ? fullName : student.email,
-                email: student.email,
-                user_id: student.user_id || "",
-              };
-            }
-          )
-        );
-      }
-
-      // Combine static and API students, removing duplicates by email
-      const emailSet = new Set<string>();
-      const combined: StudentDisplay[] = [];
-
-      [...staticStudents, ...apiStudents].forEach((student) => {
-        if (!emailSet.has(student.email)) {
-          emailSet.add(student.email);
-          combined.push(student);
-        }
-      });
-
-      setAllStudentData(combined);
-
-      // Keep existingNames for backward compatibility
-      const names = combined.map((s) => s.name);
-      const unique = Array.from(new Set(names));
-      setExistingNames(unique);
-    };
-
-    fetchNames();
-  }, []);
+    if (converted !== null) {
+      setCloseFriends(converted);
+    }
+  }, [emailToNameMap, allStudentData, closeFriends]);
 
   const friendSuggestions = useMemo(() => {
     if (!friendInput.trim()) {
@@ -178,35 +258,88 @@ function SurveyPageContent() {
     }
 
     const normalized = friendInput.toLowerCase().trim();
-    const closeFriendsSet = new Set(closeFriends);
+    const closeFriendsSet = new Set(closeFriends); // closeFriends contains email identifiers
+    const inputWords = normalized.split(/\s+/).filter((word) => word.length > 0);
 
-    // Filter and score suggestions
+    // Filter and score suggestions - only from CSV students
     const scored = allStudentData
-      .filter((student) => !closeFriendsSet.has(student.name))
+      .filter((student) => !closeFriendsSet.has(student.emailIdentifier))
       .map((student) => {
         const nameLower = student.name.toLowerCase();
         const emailLower = student.email.toLowerCase();
+        const emailIdentifierLower = student.emailIdentifier.toLowerCase();
         
-        // Check if input matches name or email
-        const nameMatch = nameLower.includes(normalized);
+        // Parse student name into parts for smarter matching
+        const nameParts = nameLower.split(/\s+/).filter((part) => part.length > 0);
+        const firstName = nameParts[0] || "";
+        const lastName = nameParts[nameParts.length - 1] || "";
+        
+        // Check different matching strategies
+        let nameMatch = false;
+        let firstNameMatch = false;
+        let lastNameMatch = false;
+        let firstLastMatch = false;
+        
+        // Check if input matches full name
+        nameMatch = nameLower.includes(normalized);
+        
+        // Check if input matches first name only
+        if (inputWords.length === 1 && firstName === normalized) {
+          firstNameMatch = true;
+        }
+        
+        // Check if input matches last name only
+        if (inputWords.length === 1 && lastName === normalized) {
+          lastNameMatch = true;
+        }
+        
+        // Check if input matches "First Last" format (even if student has middle name)
+        if (inputWords.length >= 2) {
+          const inputFirst = inputWords[0];
+          const inputLast = inputWords[inputWords.length - 1];
+          
+          // Check if first word matches first name and last word matches last name
+          if (firstName === inputFirst && lastName === inputLast) {
+            firstLastMatch = true;
+          }
+        }
+        
         const emailMatch = emailLower.includes(normalized);
+        const identifierMatch = emailIdentifierLower.includes(normalized);
         
-        if (!nameMatch && !emailMatch) {
+        // Consider it a match if any of these conditions are true
+        const isMatch = nameMatch || firstNameMatch || lastNameMatch || firstLastMatch || emailMatch || identifierMatch;
+        
+        if (!isMatch) {
           return null;
         }
 
         // Calculate score for sorting (exact matches first, then starts with, then contains)
         let score = 0;
-        if (nameLower === normalized || emailLower === normalized) {
-          score = 100; // Exact match
-        } else if (nameLower.startsWith(normalized) || emailLower.startsWith(normalized)) {
-          score = 50; // Starts with
-        } else {
-          score = 10; // Contains
+        
+        // Exact matches get highest priority
+        if (nameLower === normalized || emailLower === normalized || emailIdentifierLower === normalized) {
+          score = 100;
+        } 
+        // First Last match gets high priority (even with middle name)
+        else if (firstLastMatch) {
+          score = 90;
+        }
+        // Starts with matches
+        else if (nameLower.startsWith(normalized) || emailLower.startsWith(normalized) || emailIdentifierLower.startsWith(normalized)) {
+          score = 50;
+        }
+        // First or last name exact match
+        else if (firstNameMatch || lastNameMatch) {
+          score = 40;
+        }
+        // Contains matches
+        else {
+          score = 10;
         }
 
         // Boost score if name matches (prefer name matches over email matches)
-        if (nameMatch && !emailMatch) {
+        if ((nameMatch || firstNameMatch || lastNameMatch || firstLastMatch) && !emailMatch && !identifierMatch) {
           score += 5;
         }
 
@@ -220,25 +353,80 @@ function SurveyPageContent() {
     return scored;
   }, [allStudentData, friendInput, closeFriends]);
 
-  const handleFriendAdd = (name: string) => {
-    if (!name.trim() || closeFriends.includes(name)) {
+  const handleFriendAdd = (nameOrEmail: string) => {
+    if (!nameOrEmail.trim()) {
       setFriendInput("");
       return;
     }
 
-    if (closeFriends.length >= MAX_FRIENDS) {
-      setError(`You can add up to ${MAX_FRIENDS} friends.`);
+    // Find the student by name or email identifier
+    const normalized = nameOrEmail.trim().toLowerCase();
+    const inputWords = normalized.split(/\s+/).filter((word) => word.length > 0);
+    
+    const student = allStudentData.find((s) => {
+      const nameLower = s.name.toLowerCase();
+      const emailLower = s.email.toLowerCase();
+      const emailIdentifierLower = s.emailIdentifier.toLowerCase();
+      
+      // Check exact matches first (full name, email, identifier)
+      if (nameLower === normalized || emailLower === normalized || emailIdentifierLower === normalized) {
+        return true;
+      }
+      
+      // Parse student name into parts for smarter matching
+      const nameParts = nameLower.split(/\s+/).filter((part) => part.length > 0);
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts[nameParts.length - 1] || "";
+      
+      // Check if input matches "First Last" format (even if student has middle name)
+      if (inputWords.length >= 2) {
+        const inputFirst = inputWords[0];
+        const inputLast = inputWords[inputWords.length - 1];
+        
+        // Check if first word matches first name and last word matches last name
+        if (firstName === inputFirst && lastName === inputLast) {
+          return true;
+        }
+      }
+      
+      // Check if input matches first name only
+      if (inputWords.length === 1 && firstName === normalized) {
+        return true;
+      }
+      
+      // Check if input matches last name only
+      if (inputWords.length === 1 && lastName === normalized) {
+        return true;
+      }
+      
+      // Check if input is contained in name, email, or identifier
+      if (nameLower.includes(normalized) || emailLower.includes(normalized) || emailIdentifierLower.includes(normalized)) {
+        return true;
+      }
+      
+      return false;
+    });
+
+    if (!student) {
+      setError("This person is not in the Stanford undergraduate directory. Please only add close friends who are Stanford undergraduates.");
       setFriendInput("");
       return;
     }
 
-    setCloseFriends((prev) => [...prev, name.trim()]);
+    const emailIdentifier = student.emailIdentifier;
+
+    if (closeFriends.includes(emailIdentifier)) {
+      setFriendInput("");
+      return;
+    }
+
+    setCloseFriends((prev) => [...prev, emailIdentifier]);
     setFriendInput("");
     setError(null);
   };
 
-  const handleFriendRemove = (name: string) => {
-    setCloseFriends((prev) => prev.filter((friend) => friend !== name));
+  const handleFriendRemove = (emailIdentifier: string) => {
+    setCloseFriends((prev) => prev.filter((friend) => friend !== emailIdentifier));
     setError(null);
   };
 
@@ -281,18 +469,28 @@ function SurveyPageContent() {
       return;
     }
 
-    if (closeFriends.length > MAX_FRIENDS) {
-      setError(`You can add up to ${MAX_FRIENDS} friends.`);
-      return;
-    }
-
     if (!ucBerkeleyChoice) {
       setError("Please answer the UC Berkeley question.");
       return;
     }
 
+    // Validate that all close friends are valid email identifiers from the CSV
+    const invalidFriends = closeFriends.filter(
+      (emailIdentifier) => !emailToNameMap.has(emailIdentifier)
+    );
+
+    if (invalidFriends.length > 0) {
+      setError(
+        "Some close friends are not in the Stanford undergraduate directory. Please remove them and add only Stanford undergraduates."
+      );
+      return;
+    }
+
     setStatus("loading");
     setError(null);
+
+    // All close friends should already be email identifiers at this point
+    const closeFriendsIdentifiers = closeFriends;
 
     const response = await fetch(`/api/students/${studentId}`, {
       method: "PATCH",
@@ -303,7 +501,7 @@ function SurveyPageContent() {
         grad_year: Number(gradYear),
         sex,
         dorm,
-        close_friends: closeFriends,
+        close_friends: closeFriendsIdentifiers,
         uc_berkeley_choice: ucBerkeleyChoice,
       }),
     });
@@ -328,7 +526,6 @@ function SurveyPageContent() {
     !sex ||
     !dorm ||
     closeFriends.length < MIN_FRIENDS ||
-    closeFriends.length > MAX_FRIENDS ||
     !ucBerkeleyChoice;
 
   if (!studentId) {
@@ -458,7 +655,7 @@ function SurveyPageContent() {
           <div className="mt-8">
             <p className="text-sm font-medium text-slate-800">Name 5-20 close friends</p>
             <p className="text-xs text-slate-500">
-              Start typing to see suggestions pulled from the current student list.
+              Start typing to see suggestions. Only Stanford undergraduates from the directory can be added.
             </p>
 
             <div className="relative mt-3">
@@ -499,26 +696,30 @@ function SurveyPageContent() {
             </div>
 
             <p className="mt-2 text-xs text-slate-500">
-              Added {closeFriends.length} / {MAX_FRIENDS} friends (minimum {MIN_FRIENDS}).
+              Added {closeFriends.length} friends (minimum {MIN_FRIENDS}).
             </p>
 
             <div className="mt-3 flex flex-wrap gap-2">
-              {closeFriends.map((friend) => (
-                <span
-                  key={friend}
-                  className="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1 text-sm text-indigo-800"
-                >
-                  {friend}
-                  <button
-                    type="button"
-                    onClick={() => handleFriendRemove(friend)}
-                    className="text-xs text-indigo-600"
-                    aria-label={`Remove ${friend}`}
+              {closeFriends.map((emailIdentifier) => {
+                // Display name if available, otherwise show email identifier
+                const displayName = emailToNameMap.get(emailIdentifier) || emailIdentifier;
+                return (
+                  <span
+                    key={emailIdentifier}
+                    className="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1 text-sm text-indigo-800"
                   >
-                    ✕
-                  </button>
-                </span>
-              ))}
+                    {displayName}
+                    <button
+                      type="button"
+                      onClick={() => handleFriendRemove(emailIdentifier)}
+                      className="text-xs text-indigo-600"
+                      aria-label={`Remove ${displayName}`}
+                    >
+                      ✕
+                    </button>
+                  </span>
+                );
+              })}
             </div>
           </div>
 

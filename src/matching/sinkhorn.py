@@ -27,7 +27,7 @@ def generate_mock_dataset(
         seed: Random seed for reproducibility
     
     Returns:
-        Dictionary with 'students', 'friendships', and 'matches' keys matching the dataset format
+        Dictionary with 'students' and 'matches' keys matching the dataset format
     """
     if seed is not None:
         random.seed(seed)
@@ -118,7 +118,6 @@ def generate_mock_dataset(
     
     return {
         "students": students,
-        "friendships": [],
         "matches": []
     }
 

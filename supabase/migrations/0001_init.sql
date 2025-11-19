@@ -43,7 +43,6 @@ create index if not exists idx_matches_student_a on public.matches (student_a_id
 create index if not exists idx_matches_student_b on public.matches (student_b_id);
 
 comment on table public.students is 'Core student profile records for the mutual matching webapp.';
-comment on table public.friendships is 'Tracks friendship requests and their status between students.';
-comment on table public.matches is 'Stores algorithmic matches generated from friendships or other heuristics.';
+comment on table public.matches is 'Stores algorithmic matches with compatibility scores and status.';
 
 

@@ -2,14 +2,13 @@ import path from "node:path";
 import { promises as fs } from "node:fs";
 
 import { createServiceRoleClient } from "@/lib/supabase/server";
-import { Friendship, Match, Student } from "@/types/domain";
+import { Match, Student } from "@/types/domain";
 
 const DATA_DIR = path.join(process.cwd(), "src", "matching", "data");
 const DEFAULT_DATA_FILE = path.join(DATA_DIR, "local_dataset.json");
 
 export type MatchingDataset = {
   students: Student[];
-  friendships: Friendship[];
   matches: Match[];
 };
 
@@ -26,15 +25,13 @@ async function fetchTable<T>(tableName: string): Promise<T[]> {
 }
 
 export async function fetchMatchingDataset(): Promise<MatchingDataset> {
-  const [students, friendships, matches] = await Promise.all([
+  const [students, matches] = await Promise.all([
     fetchTable<Student>("students"),
-    fetchTable<Friendship>("friendships"),
     fetchTable<Match>("matches"),
   ]);
 
   return {
     students,
-    friendships,
     matches,
   };
 }
@@ -57,11 +54,6 @@ export async function fetchAndStoreDataset(filePath = DEFAULT_DATA_FILE) {
 function mapDatasetCounts(dataset: MatchingDataset) {
   return {
     students: dataset.students.length,
-    friendships: dataset.friendships.length,
     matches: dataset.matches.length,
   };
 }
-
-fetchAndStoreDataset().then(({ filePath, counts }) => {
-    console.log("Saved dataset to", filePath, counts);
-  });

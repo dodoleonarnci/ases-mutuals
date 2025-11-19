@@ -25,7 +25,7 @@ def save_mock_dataset(dataset: Dict[str, Any], path: Path = MOCK_DATASET_FILE) -
     Save a mock dataset to a JSON file.
     
     Args:
-        dataset: Dictionary with 'students', 'friendships', and 'matches' keys
+        dataset: Dictionary with 'students' and 'matches' keys
         path: Path to save the mock dataset (defaults to data/mock_dataset.json)
     """
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -40,7 +40,7 @@ def load_mock_dataset(path: Path = MOCK_DATASET_FILE) -> Dict[str, Any]:
         path: Path to the mock dataset file (defaults to data/mock_dataset.json)
     
     Returns:
-        Dictionary with 'students', 'friendships', and 'matches' keys
+        Dictionary with 'students' and 'matches' keys
     
     Raises:
         FileNotFoundError: If the file doesn't exist

@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 
+import { parseJsonRequest } from "@/lib/api-helpers";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { formatZodError, matchInsertSchema } from "@/lib/validators";
 
-const supabase = () => createServiceRoleClient();
-
 export async function GET() {
-  const { data, error } = await supabase()
+  const { data, error } = await createServiceRoleClient()
     .from("matches")
     .select(
       "*, student_a:student_a_id(first_name,last_name,email), student_b:student_b_id(first_name,last_name,email)",
@@ -21,13 +20,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  let payload: unknown;
-
-  try {
-    payload = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+  const parseResult = await parseJsonRequest(request);
+  if (parseResult.error) {
+    return parseResult.error;
   }
+  const payload = parseResult.data;
 
   const parsed = matchInsertSchema.safeParse(payload);
 
@@ -38,7 +35,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { data, error } = await supabase()
+  const { data, error } = await createServiceRoleClient()
     .from("matches")
     .insert(parsed.data)
     .select()

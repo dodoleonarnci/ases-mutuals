@@ -1,21 +1,13 @@
 import { NextResponse } from "next/server";
 
+import { parseJsonRequest } from "@/lib/api-helpers";
 import { deriveStudentIdentifier } from "@/lib/identifiers";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { formatZodError, signupInsertSchema } from "@/lib/validators";
-import studentNamesData from "@/data/studentNames.json";
-
-interface StudentData {
-  first_name: string;
-  last_name: string;
-  email: string;
-  user_id: string;
-}
-
-const supabase = () => createServiceRoleClient();
+import { getStudentNamesFromCSV, type StudentData } from "@/lib/studentData";
 
 export async function GET() {
-  const { data, error } = await supabase()
+  const { data, error } = await createServiceRoleClient()
     .from("signups")
     .select("*")
     .order("created_at", { ascending: false });
@@ -29,13 +21,11 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    let payload: unknown;
-
-    try {
-      payload = await request.json();
-    } catch {
-      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    const parseResult = await parseJsonRequest(request);
+    if (parseResult.error) {
+      return parseResult.error;
     }
+    const payload = parseResult.data;
 
     const parsed = signupInsertSchema.safeParse(payload);
 
@@ -51,14 +41,14 @@ export async function POST(request: Request) {
     };
     const studentId = deriveStudentIdentifier(normalized.email);
 
-    // Look up user_id from the student names JSON file
-    const studentNames = studentNamesData as StudentData[];
+    // Look up user_id from the student names CSV file
+    const studentNames = getStudentNamesFromCSV();
     const matchedStudent = studentNames.find(
       (s) => s.email.toLowerCase() === normalized.email
     );
     const userId = matchedStudent?.user_id || null;
 
-    const client = supabase();
+    const client = createServiceRoleClient();
 
     await client.from("signups").upsert(normalized, {
       onConflict: "email",
@@ -75,7 +65,7 @@ export async function POST(request: Request) {
     }
 
     if (existingStudent) {
-      // Update user_id if it's missing and we found it in the JSON
+      // Update user_id if it's missing and we found it in the CSV
       if (!existingStudent.user_id && userId) {
         await client
           .from("students")
