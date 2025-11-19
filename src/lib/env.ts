@@ -8,24 +8,41 @@ const envSchema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
 });
 
-const parsed = envSchema.safeParse({
-  SUPABASE_URL: process.env.SUPABASE_URL,
-  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
-  SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
-  NEXT_PUBLIC_SUPABASE_URL:
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL,
-  NEXT_PUBLIC_SUPABASE_ANON_KEY:
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY,
-});
+type Env = z.infer<typeof envSchema>;
 
-if (!parsed.success) {
-  console.error(
-    "❌ Missing or invalid environment variables:\n",
-    parsed.error.flatten().fieldErrors,
-  );
-  throw new Error("Environment validation failed");
+let cachedEnv: Env | null = null;
+
+function getEnv(): Env {
+  if (cachedEnv) {
+    return cachedEnv;
+  }
+
+  const parsed = envSchema.safeParse({
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    NEXT_PUBLIC_SUPABASE_URL:
+      process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY:
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY,
+  });
+
+  if (!parsed.success) {
+    console.error(
+      "❌ Missing or invalid environment variables:\n",
+      parsed.error.flatten().fieldErrors,
+    );
+    throw new Error("Environment validation failed");
+  }
+
+  cachedEnv = parsed.data;
+  return cachedEnv;
 }
 
-export const env = parsed.data;
+export const env = new Proxy({} as Env, {
+  get(_target, prop: keyof Env) {
+    return getEnv()[prop];
+  },
+});
 
  
