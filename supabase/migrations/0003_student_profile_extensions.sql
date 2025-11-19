@@ -26,7 +26,7 @@ alter table if exists public.students
 comment on column public.students.sex is 'Self-reported sex used for survey insights.';
 comment on column public.students.dorm is 'Current dorm assignment provided through the onboarding survey.';
 comment on column public.students.involvements is 'Free-form description of on-campus involvements.';
-comment on column public.students.close_friends is 'List of 5-20 close friends supplied during the survey.';
+comment on column public.students.close_friends is 'List of close friends supplied during the survey.';
 comment on column public.students.survey_completed is 'Indicates whether the onboarding survey was submitted.';
 
 

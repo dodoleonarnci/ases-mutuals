@@ -56,6 +56,21 @@ function setStudentNames(
 }
 
 /**
+ * Extracts first and last name from a full name (excluding middle name).
+ */
+function getFirstLastName(fullName: string): string {
+  const nameParts = fullName.trim().split(/\s+/).filter((part) => part.length > 0);
+  if (nameParts.length === 0) {
+    return "";
+  }
+  if (nameParts.length === 1) {
+    return nameParts[0];
+  }
+  // Return first name and last name only
+  return `${nameParts[0]} ${nameParts[nameParts.length - 1]}`;
+}
+
+/**
  * Converts close_friends from names to email identifiers.
  * Returns the converted array, or null if no conversion is needed.
  */
@@ -274,14 +289,17 @@ function SurveyPageContent() {
         const firstName = nameParts[0] || "";
         const lastName = nameParts[nameParts.length - 1] || "";
         
+        // Create search name without middle name (first + last only)
+        const searchName = `${firstName} ${lastName}`.trim().toLowerCase();
+        
         // Check different matching strategies
         let nameMatch = false;
         let firstNameMatch = false;
         let lastNameMatch = false;
         let firstLastMatch = false;
         
-        // Check if input matches full name
-        nameMatch = nameLower.includes(normalized);
+        // Check if input matches search name (first + last, no middle)
+        nameMatch = searchName.includes(normalized);
         
         // Check if input matches first name only
         if (inputWords.length === 1 && firstName === normalized) {
@@ -317,16 +335,16 @@ function SurveyPageContent() {
         // Calculate score for sorting (exact matches first, then starts with, then contains)
         let score = 0;
         
-        // Exact matches get highest priority
-        if (nameLower === normalized || emailLower === normalized || emailIdentifierLower === normalized) {
+        // Exact matches get highest priority (using searchName without middle name)
+        if (searchName === normalized || emailLower === normalized || emailIdentifierLower === normalized) {
           score = 100;
         } 
         // First Last match gets high priority (even with middle name)
         else if (firstLastMatch) {
           score = 90;
         }
-        // Starts with matches
-        else if (nameLower.startsWith(normalized) || emailLower.startsWith(normalized) || emailIdentifierLower.startsWith(normalized)) {
+        // Starts with matches (using searchName without middle name)
+        else if (searchName.startsWith(normalized) || emailLower.startsWith(normalized) || emailIdentifierLower.startsWith(normalized)) {
           score = 50;
         }
         // First or last name exact match
@@ -368,15 +386,18 @@ function SurveyPageContent() {
       const emailLower = s.email.toLowerCase();
       const emailIdentifierLower = s.emailIdentifier.toLowerCase();
       
-      // Check exact matches first (full name, email, identifier)
-      if (nameLower === normalized || emailLower === normalized || emailIdentifierLower === normalized) {
-        return true;
-      }
-      
       // Parse student name into parts for smarter matching
       const nameParts = nameLower.split(/\s+/).filter((part) => part.length > 0);
       const firstName = nameParts[0] || "";
       const lastName = nameParts[nameParts.length - 1] || "";
+      
+      // Create search name without middle name (first + last only)
+      const searchName = `${firstName} ${lastName}`.trim().toLowerCase();
+      
+      // Check exact matches first (search name without middle, email, identifier)
+      if (searchName === normalized || emailLower === normalized || emailIdentifierLower === normalized) {
+        return true;
+      }
       
       // Check if input matches "First Last" format (even if student has middle name)
       if (inputWords.length >= 2) {
@@ -399,8 +420,8 @@ function SurveyPageContent() {
         return true;
       }
       
-      // Check if input is contained in name, email, or identifier
-      if (nameLower.includes(normalized) || emailLower.includes(normalized) || emailIdentifierLower.includes(normalized)) {
+      // Check if input is contained in search name (without middle), email, or identifier
+      if (searchName.includes(normalized) || emailLower.includes(normalized) || emailIdentifierLower.includes(normalized)) {
         return true;
       }
       
@@ -653,7 +674,7 @@ function SurveyPageContent() {
           </div>
 
           <div className="mt-8">
-            <p className="text-sm font-medium text-slate-800">Name 5-20 close friends</p>
+            <p className="text-sm font-medium text-slate-800">Name your close friends</p>
             <p className="text-xs text-slate-500">
               Start typing to see suggestions. Only Stanford undergraduates from the directory can be added.
             </p>
@@ -701,8 +722,9 @@ function SurveyPageContent() {
 
             <div className="mt-3 flex flex-wrap gap-2">
               {closeFriends.map((emailIdentifier) => {
-                // Display name if available, otherwise show email identifier
-                const displayName = emailToNameMap.get(emailIdentifier) || emailIdentifier;
+                // Display name without middle name if available, otherwise show email identifier
+                const fullName = emailToNameMap.get(emailIdentifier);
+                const displayName = fullName ? getFirstLastName(fullName) : emailIdentifier;
                 return (
                   <span
                     key={emailIdentifier}

@@ -67,20 +67,33 @@ const NETWORK_STORY = [
   {
     id: "mutuals",
     stage: 1,
-    title: "Then we look at your friends’ circles.",
+    title: "Then we look at your friends' circles.",
     body: "Each friend has their own people: classmates, club friends, coworkers. We map those friends-of-friends to see where new connections could come from.",
   },
   {
-    id: "campus-web",
+    id: "algo",
     stage: 2,
-    title: "We connect the campus, not just your side.",
-    body: "We pay attention to where your world doesn’t usually cross — east and west campus, different majors, other social pockets — and look for ways to bridge them through mutuals.",
+    title: "Everyone gets a good match, unlike da****op",
+    body: (
+      <>
+        We use a variant of the{" "}
+        <a
+          href="https://en.wikipedia.org/wiki/Sinkhorn%27s_theorem"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-indigo-600 underline hover:text-indigo-700"
+        >
+          Sinkhorn-Knopp algorithm
+        </a>{" "}
+        from entropic optimal transport to ensure optimized total utility, while meeting individual baselines.
+      </>
+    ),
   },
   {
-    id: "one-hop",
+    id: "campus-web",
     stage: 3,
-    title: "You meet people one hop away, not strangers.",
-    body: "Instead of strangers, we introduce you to someone one hop away through a mutual you trust. You show up to a table full of new faces, all lightly connected through people you already know.",
+    title: "We connect the campus, not just your side.",
+    body: "We pay attention to where your world doesn't usually cross — east and west campus, different majors, other social pockets — and look for ways to bridge them through mutuals.",
   },
 ];
 
@@ -107,7 +120,6 @@ const NetworkViz = ({ stage }: { stage: number }) => {
           <span className="rounded-full bg-indigo-50 px-3 py-1 text-[10px] font-medium uppercase tracking-wide text-indigo-800">
             your campus network
           </span>
-          <span className="text-[10px]">Scroll to watch it connect</span>
         </div>
 
         <div className="relative mx-auto aspect-square max-w-xs">
@@ -228,14 +240,6 @@ const NetworkViz = ({ stage }: { stage: number }) => {
             })}
           </svg>
         </div>
-
-        <p className="mt-4 text-[11px] leading-relaxed text-slate-500">
-          The more we learn about your circles, the more lines appear. mutuals finds gentle paths
-          like{" "}
-          <span className="text-sky-700 font-medium">
-            you → a mutual friend → someone new at your table.
-          </span>
-        </p>
       </div>
     </div>
   );
@@ -292,21 +296,15 @@ export default function MutualsLanding() {
             <div className="relative h-full w-full px-6 py-8 md:px-10 md:py-10">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(254,249,195,0.4),_transparent_55%),radial-gradient(circle_at_top,_rgba(248,250,252,0.15),_transparent_60%)] mix-blend-soft-light" />
 
-              <div className="relative max-w-xl space-y-5 text-slate-50">
-                <button className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-xs font-medium text-slate-50 backdrop-blur hover:bg-white/20">
-                  <span className="h-2 w-2 rounded-full bg-emerald-300" />
-                  Join 3271 students
-                </button>
-
+              <div className="relative max-w-xxl space-y-5 text-slate-50">
                 <h1 className="text-4xl font-semibold leading-tight md:text-5xl">
                   Meet new people through mutuals.
-                  <span className="block text-slate-100">For your .edu email.</span>
+                  <span className="block text-slate-100">No more BS matching apps.</span>
                 </h1>
 
                 <p className="max-w-lg text-sm leading-relaxed md:text-base">
-                  Fill out a short profile. Once a week, mutuals seats you at a table with new
-                  people — all lightly connected through mutual friends. It&apos;s not about finding
-                  your clone. It&apos;s about gently expanding who you know.
+                  Once a week, mutuals notifies you and your match to meet up. By signing up, you stay tuned for on campus events to do with your friend match, and get notified when we expand our survey for better matches. <br />
+                  <b>Join our endeavor to tighten the Stanford network. </b>
                 </p>
 
                 <div className="flex flex-wrap items-center gap-3 pt-1">
@@ -314,7 +312,7 @@ export default function MutualsLanding() {
                     Get seated this week
                   </Link>
                   <span className="text-xs text-slate-100/80">
-                    No swiping. No strangers. Just one new table at a time.
+                    Friends don't have to start as complete strangers.
                   </span>
                 </div>
               </div>
@@ -322,14 +320,14 @@ export default function MutualsLanding() {
               {/* little “people” hint in corner */}
               <div className="pointer-events-none absolute inset-x-6 bottom-4 flex justify-end md:inset-x-10">
                 <div className="flex gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-xs">
-                    😊
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-lg">
+                  👫
                   </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-xs">
-                    🎓
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-lg">
+                  🍻
                   </div>
-                  <div className="hidden h-10 w-10 items-center justify-center rounded-full bg-white/70 text-xs md:flex">
-                    🍜
+                  <div className="hidden h-10 w-10 items-center justify-center rounded-full bg-white/70 text-lg md:flex">
+                  💬
                   </div>
                 </div>
               </div>
@@ -346,7 +344,7 @@ export default function MutualsLanding() {
             <div className="space-y-3">
               <h3 className="text-xl font-semibold text-slate-900">Tell us about your circles</h3>
               <p className="text-sm text-slate-800">
-                Your major, year, usual hangout spots, and a few close friends. We use this to
+                Your major, year, usual hangout spots, and several close friends. We use this to
                 understand your everyday routine — not to keep you in it, but to see where we can
                 gently stretch it.
               </p>
@@ -361,14 +359,14 @@ export default function MutualsLanding() {
                 <div className="rounded-xl border border-pink-100 bg-pink-50 p-2">
                   <p className="font-semibold text-slate-900">Where you usually are</p>
                   <p className="mt-1 text-[11px] text-slate-700">
-                    West campus · Terman, CoHo, late-night study rooms
+                    West campus · CoDa, On Call
                   </p>
                 </div>
               </div>
 
               <p className="mt-3 text-xs font-medium text-slate-500">People in your core circle</p>
               <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                {["Jordan", "Maya", "Chris", "Roommates"].map((name) => (
+                {["John", "Girlfriend", "Pset buddies", "Dormmates"].map((name) => (
                   <span
                     key={name}
                     className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-slate-800"
@@ -385,25 +383,24 @@ export default function MutualsLanding() {
           <div className="grid gap-6 rounded-[28px] bg-[#ffe2eb] p-6 shadow-md md:grid-cols-2 md:items-center">
             <div className="space-y-3">
               <h3 className="text-xl font-semibold text-slate-900">
-                We set up a whole table through mutuals.
+                We set up a small gang through mutuals.
               </h3>
               <p className="text-sm text-slate-800">
-                On the day you choose, mutuals seats you with a small group. Everyone at the table
-                is connected by mutual friends — not necessarily similar, but all one hop away in
+                Mutuals seats you with people connected by mutual friends — not necessarily similar, but all one hop away in
                 different directions.
               </p>
             </div>
             <div className="rounded-2xl bg-white/95 p-4 shadow">
-              <p className="text-xs font-medium text-slate-500">Thursday 7:30pm · Table 3</p>
+              <p className="text-xs font-medium text-slate-500">This week's gang</p>
 
               <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
                 {[
                   { name: "You", via: "…" },
                   { name: "Aanya", via: "via Jordan" },
-                  { name: "Leo", via: "via Priya" },
+                  { name: "Leo", via: "via Jordan" },
                   { name: "Miles", via: "via Maya" },
-                  { name: "Sara", via: "via Chris" },
-                  { name: "Noah", via: "via Taylor" },
+                  { name: "Sara", via: "via Maya" },
+                  { name: "Noah", via: "via Maya" },
                 ].map((p) => (
                   <div
                     key={p.name + p.via}
@@ -424,11 +421,6 @@ export default function MutualsLanding() {
                   </div>
                 ))}
               </div>
-
-              <p className="mt-3 text-[11px] text-slate-600">
-                Everyone here is connected through mutual friends — different majors, sides of
-                campus, and circles, sharing one table for the night.
-              </p>
             </div>
           </div>
         </section>
