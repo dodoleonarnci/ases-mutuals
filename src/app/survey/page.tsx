@@ -333,14 +333,14 @@ function SurveyPageContent() {
 
   if (!studentId) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-emerald-50 to-white px-6 py-16 text-zinc-900">
+      <main className="min-h-screen bg-[#f4f4fb] px-6 py-16 text-slate-900">
         <div className="mx-auto max-w-xl rounded-3xl border border-amber-200 bg-amber-50 p-8 text-center">
           <p className="text-lg font-semibold text-amber-900">
             We need a signup link to load your survey.
           </p>
           <Link
             href="/signup"
-            className="mt-6 inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500"
+            className="mt-6 inline-flex items-center justify-center rounded-2xl bg-slate-950 px-6 py-3 text-sm font-semibold text-slate-50 transition hover:bg-slate-900"
           >
             Go to signup
           </Link>
@@ -350,34 +350,34 @@ function SurveyPageContent() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-emerald-50 to-white px-6 py-16 text-zinc-900">
+    <main className="min-h-screen bg-[#f4f4fb] px-6 py-16 text-slate-900">
       <div className="mx-auto flex max-w-3xl flex-col gap-8">
         <div>
           <Link
             href="/"
-            className="text-sm font-semibold text-emerald-600 transition hover:text-emerald-500"
+            className="text-sm font-semibold text-indigo-600 transition hover:text-indigo-500"
           >
             ← Back to landing page
           </Link>
-          <h1 className="mt-4 text-4xl font-bold tracking-tight text-zinc-950">
+          <h1 className="mt-4 text-4xl font-bold tracking-tight text-slate-950">
             Tell us about yourself
           </h1>
-          <p className="mt-3 text-base text-zinc-600">
+          <p className="mt-3 text-base text-slate-600">
             Drop your homies. Literally takes one minute.
-          </p>
+          </p>``
           {email && (
-            <p className="mt-2 text-sm text-zinc-500">
-              Logged in as <span className="font-semibold text-zinc-700">{email}</span>
+            <p className="mt-2 text-sm text-slate-500">
+              Logged in as <span className="font-semibold text-slate-700">{email}</span>
             </p>
           )}
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8"
+          className="rounded-3xl border border-[#d3d3ec] bg-white p-6 shadow-sm sm:p-8"
         >
           <div className="grid gap-6 sm:grid-cols-2">
-            <label className="text-sm font-medium text-zinc-800">
+            <label className="text-sm font-medium text-slate-800">
               First name
               <input
                 type="text"
@@ -385,11 +385,11 @@ function SurveyPageContent() {
                 onChange={(event) => setFirstName(event.target.value)}
                 required
                 placeholder="Enter your first name"
-                className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               />
             </label>
 
-            <label className="text-sm font-medium text-zinc-800">
+            <label className="text-sm font-medium text-slate-800">
               Last name
               <input
                 type="text"
@@ -397,19 +397,19 @@ function SurveyPageContent() {
                 onChange={(event) => setLastName(event.target.value)}
                 required
                 placeholder="Enter your last name"
-                className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               />
             </label>
           </div>
 
           <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            <label className="text-sm font-medium text-zinc-800">
+            <label className="text-sm font-medium text-slate-800">
               Class year
               <select
                 value={gradYear}
                 onChange={(event) => setGradYear(event.target.value)}
                 required
-                className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               >
                 <option value="">Select year</option>
                 {CLASS_YEARS.map((year) => (
@@ -420,13 +420,13 @@ function SurveyPageContent() {
               </select>
             </label>
 
-            <label className="text-sm font-medium text-zinc-800">
+            <label className="text-sm font-medium text-slate-800">
               Sex
               <select
                 value={sex}
                 onChange={(event) => setSex(event.target.value)}
                 required
-                className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               >
                 <option value="">Select option</option>
                 <option value="male">Male</option>
@@ -437,13 +437,13 @@ function SurveyPageContent() {
           </div>
 
           <div className="mt-6">
-            <label className="text-sm font-medium text-zinc-800">
+            <label className="text-sm font-medium text-slate-800">
               Dorm
               <select
                 value={dorm}
                 onChange={(event) => setDorm(event.target.value)}
                 required
-                className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               >
                 <option value="">Select dorm</option>
                 {DORM_OPTIONS.map((option) => (
@@ -456,8 +456,8 @@ function SurveyPageContent() {
           </div>
 
           <div className="mt-8">
-            <p className="text-sm font-medium text-zinc-800">Name 5-20 close friends</p>
-            <p className="text-xs text-zinc-500">
+            <p className="text-sm font-medium text-slate-800">Name 5-20 close friends</p>
+            <p className="text-xs text-slate-500">
               Start typing to see suggestions pulled from the current student list.
             </p>
 
@@ -477,20 +477,20 @@ function SurveyPageContent() {
                   }
                 }}
                 placeholder="Add a friend"
-                className="w-full rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               />
 
               {friendSuggestions.length > 0 && (
-                <ul className="absolute z-10 mt-2 w-full max-h-64 overflow-y-auto rounded-2xl border border-zinc-200 bg-white text-sm shadow-lg">
+                <ul className="absolute z-10 mt-2 w-full max-h-64 overflow-y-auto rounded-2xl border border-slate-200 bg-white text-sm shadow-lg">
                   {friendSuggestions.map((student) => (
                     <li key={`${student.name}-${student.email}`}>
                       <button
                         type="button"
                         onClick={() => handleFriendAdd(student.name)}
-                        className="flex w-full flex-col items-start px-4 py-2.5 text-left text-zinc-700 transition hover:bg-emerald-50"
+                        className="flex w-full flex-col items-start px-4 py-2.5 text-left text-slate-700 transition hover:bg-indigo-50"
                       >
                         <span className="font-medium">{student.name}</span>
-                        <span className="text-xs text-zinc-500">{student.email}</span>
+                        <span className="text-xs text-slate-500">{student.email}</span>
                       </button>
                     </li>
                   ))}
@@ -498,7 +498,7 @@ function SurveyPageContent() {
               )}
             </div>
 
-            <p className="mt-2 text-xs text-zinc-500">
+            <p className="mt-2 text-xs text-slate-500">
               Added {closeFriends.length} / {MAX_FRIENDS} friends (minimum {MIN_FRIENDS}).
             </p>
 
@@ -506,13 +506,13 @@ function SurveyPageContent() {
               {closeFriends.map((friend) => (
                 <span
                   key={friend}
-                  className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-800"
+                  className="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1 text-sm text-indigo-800"
                 >
                   {friend}
                   <button
                     type="button"
                     onClick={() => handleFriendRemove(friend)}
-                    className="text-xs text-emerald-600"
+                    className="text-xs text-indigo-600"
                     aria-label={`Remove ${friend}`}
                   >
                     ✕
@@ -523,13 +523,13 @@ function SurveyPageContent() {
           </div>
 
           <div className="mt-8">
-            <label className="text-sm font-medium text-zinc-800">
+            <label className="text-sm font-medium text-slate-800">
               Would you rather have no friends or go to UC Berkeley?
               <select
                 value={ucBerkeleyChoice}
                 onChange={(event) => setUcBerkeleyChoice(event.target.value)}
                 required
-                className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               >
                 <option value="">Select an option</option>
                 <option value="no_friends">No friends</option>
@@ -547,7 +547,7 @@ function SurveyPageContent() {
           <button
             type="submit"
             disabled={isSubmitDisabled}
-            className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-slate-950 px-4 py-3 text-sm font-semibold text-slate-50 transition hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {status === "loading" ? "Saving your survey..." : "Submit survey"}
           </button>
@@ -561,10 +561,10 @@ export default function SurveyPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-gradient-to-b from-emerald-50 to-white px-6 py-16 text-zinc-900">
+        <main className="min-h-screen bg-[#f4f4fb] px-6 py-16 text-slate-900">
           <div className="mx-auto max-w-3xl">
-            <div className="rounded-3xl border border-zinc-200 bg-white p-8 text-center">
-              <p className="text-base text-zinc-600">Loading survey...</p>
+            <div className="rounded-3xl border border-[#d3d3ec] bg-white p-8 text-center">
+              <p className="text-base text-slate-600">Loading survey...</p>
             </div>
           </div>
         </main>
