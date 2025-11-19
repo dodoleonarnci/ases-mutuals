@@ -50,6 +50,8 @@ function SurveyPageContent() {
       : null;
 
   const [email, setEmail] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [gradYear, setGradYear] = useState("");
   const [sex, setSex] = useState("");
   const [dorm, setDorm] = useState("");
@@ -82,6 +84,12 @@ function SurveyPageContent() {
       const student = payload.student;
       setEmail(student.email);
 
+      if (student.first_name) {
+        setFirstName(student.first_name);
+      }
+      if (student.last_name) {
+        setLastName(student.last_name);
+      }
       if (student.grad_year) {
         setGradYear(String(student.grad_year));
       }
@@ -242,8 +250,44 @@ function SurveyPageContent() {
       return;
     }
 
+    // Validate all required fields
+    if (!firstName.trim()) {
+      setError("Please enter your first name.");
+      return;
+    }
+
+    if (!lastName.trim()) {
+      setError("Please enter your last name.");
+      return;
+    }
+
+    if (!gradYear) {
+      setError("Please select your class year.");
+      return;
+    }
+
+    if (!sex) {
+      setError("Please select your sex.");
+      return;
+    }
+
+    if (!dorm) {
+      setError("Please select your dorm.");
+      return;
+    }
+
     if (closeFriends.length < MIN_FRIENDS) {
-      setError("Please add at least 5 close friends.");
+      setError(`Please add at least ${MIN_FRIENDS} close friends.`);
+      return;
+    }
+
+    if (closeFriends.length > MAX_FRIENDS) {
+      setError(`You can add up to ${MAX_FRIENDS} friends.`);
+      return;
+    }
+
+    if (!ucBerkeleyChoice) {
+      setError("Please answer the UC Berkeley question.");
       return;
     }
 
@@ -254,6 +298,8 @@ function SurveyPageContent() {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
         grad_year: Number(gradYear),
         sex,
         dorm,
@@ -271,11 +317,13 @@ function SurveyPageContent() {
     }
 
     setStatus("success");
-    router.push("/?survey=complete");
+    router.push("/whats-next");
   };
 
   const isSubmitDisabled =
     status === "loading" ||
+    !firstName.trim() ||
+    !lastName.trim() ||
     !gradYear ||
     !sex ||
     !dorm ||
@@ -315,8 +363,7 @@ function SurveyPageContent() {
             Tell us about yourself
           </h1>
           <p className="mt-3 text-base text-zinc-600">
-            This quick survey helps us personalize your mutual matches. It only takes a couple of
-            minutes and you can update it later.
+            Drop your homies. Literally takes one minute.
           </p>
           {email && (
             <p className="mt-2 text-sm text-zinc-500">
@@ -330,6 +377,32 @@ function SurveyPageContent() {
           className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8"
         >
           <div className="grid gap-6 sm:grid-cols-2">
+            <label className="text-sm font-medium text-zinc-800">
+              First name
+              <input
+                type="text"
+                value={firstName}
+                onChange={(event) => setFirstName(event.target.value)}
+                required
+                placeholder="Enter your first name"
+                className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+              />
+            </label>
+
+            <label className="text-sm font-medium text-zinc-800">
+              Last name
+              <input
+                type="text"
+                value={lastName}
+                onChange={(event) => setLastName(event.target.value)}
+                required
+                placeholder="Enter your last name"
+                className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-base text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+              />
+            </label>
+          </div>
+
+          <div className="mt-6 grid gap-6 sm:grid-cols-2">
             <label className="text-sm font-medium text-zinc-800">
               Class year
               <select

@@ -25,6 +25,8 @@ export const signupInsertSchema = z.object({
 });
 
 export const studentSurveySchema = z.object({
+  first_name: z.string().min(1, "First name is required"),
+  last_name: z.string().min(1, "Last name is required"),
   grad_year: z.number().int().min(2024).max(2030),
   sex: z.enum(["male", "female", "non-binary"]),
   dorm: z.string().min(1, "Dorm is required"),

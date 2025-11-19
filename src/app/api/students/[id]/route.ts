@@ -65,6 +65,8 @@ export async function PATCH(request: Request, context: Params) {
   const { data, error } = await supabase
     .from("students")
     .update({
+      first_name: parsed.data.first_name,
+      last_name: parsed.data.last_name,
       grad_year: parsed.data.grad_year,
       sex: parsed.data.sex,
       dorm: parsed.data.dorm,
