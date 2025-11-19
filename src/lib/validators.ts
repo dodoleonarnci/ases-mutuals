@@ -30,7 +30,7 @@ export const studentSurveySchema = z.object({
   grad_year: z.number().int().min(2024).max(2030),
   sex: z.enum(["male", "female", "non-binary"]),
   dorm: z.string().min(1, "Dorm is required"),
-  close_friends: z.array(z.string().min(1)).min(5).max(20),
+  close_friends: z.array(z.string().min(1)).min(5),
   uc_berkeley_choice: z.enum(["no_friends", "uc_berkeley"]),
 });
 

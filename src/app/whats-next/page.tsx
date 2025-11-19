@@ -19,28 +19,28 @@ export default function WhatsNextPage() {
           <div className="space-y-6">
             <section>
               <h2 className="text-2xl font-semibold text-slate-900">
-                [Section Title 1]
+                A couple of email updates
               </h2>
               <p className="mt-2 text-base text-slate-600">
-                [Add your content here. This is a template section that you can customize with information about what happens next in the matching process.]
+                To match you with people you will vibe with, we will slightly extend our survey questions and ask you to fill it out.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-semibold text-slate-900">
-                [Section Title 2]
+                Wait for your matches
               </h2>
               <p className="mt-2 text-base text-slate-600">
-                [Add your content here. You can include details about when matches will be available, how to access them, or any other relevant information.]
+                We will start the matrching process after the break. Get hyped.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-semibold text-slate-900">
-                [Section Title 3]
+                Events on campus
               </h2>
               <p className="mt-2 text-base text-slate-600">
-                [Add your content here. This could include information about updating your profile, connecting with matches, or other next steps.]
+                We will give you the perfect chance to have fun with your matches in person.
               </p>
             </section>
           </div>

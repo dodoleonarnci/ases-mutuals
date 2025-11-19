@@ -284,7 +284,7 @@ export default function MutualsLanding() {
               <div className="absolute left-0 top-1 h-6 w-6 rounded-full bg-indigo-500/90" />
               <div className="absolute right-0 top-1 h-6 w-6 rounded-full bg-pink-500/90 mix-blend-multiply" />
             </div>
-            <span className="text-lg font-semibold tracking-tight">mutuals</span>
+            <span className="text-lg font-semibold tracking-tight">Mutuals</span>
           </div>
         </div>
       </header>
@@ -298,12 +298,12 @@ export default function MutualsLanding() {
 
               <div className="relative max-w-xxl space-y-5 text-slate-50">
                 <h1 className="text-4xl font-semibold leading-tight md:text-5xl">
-                  Meet new people through mutuals.
+                  Meet new people through Mutuals.
                   <span className="block text-slate-100">No more BS matching apps.</span>
                 </h1>
 
                 <p className="max-w-lg text-sm leading-relaxed md:text-base">
-                  Once a week, mutuals notifies you and your match to meet up. By signing up, you stay tuned for on campus events to do with your friend match, and get notified when we expand our survey for better matches. <br />
+                  Once a week, Mutuals notifies you and your match to meet up. By signing up, you stay tuned for on campus events to do with your friend match, and get notified when we expand our survey for better matches. <br />
                   <b>Join our endeavor to tighten the Stanford network. </b>
                 </p>
 
@@ -337,7 +337,7 @@ export default function MutualsLanding() {
 
         {/* HOW IT WORKS */}
         <section className="mt-16 space-y-8">
-          <h2 className="text-center text-2xl font-semibold text-slate-900">How mutuals works</h2>
+          <h2 className="text-center text-2xl font-semibold text-slate-900">How Mutuals works</h2>
 
           {/* Card 1 – Your circles */}
           <div className="grid gap-6 rounded-[28px] bg-[#e0edff] p-6 shadow-md md:grid-cols-2 md:items-center">
@@ -383,10 +383,10 @@ export default function MutualsLanding() {
           <div className="grid gap-6 rounded-[28px] bg-[#ffe2eb] p-6 shadow-md md:grid-cols-2 md:items-center">
             <div className="space-y-3">
               <h3 className="text-xl font-semibold text-slate-900">
-                We set up a small gang through mutuals.
+                We set up a small gang through Mutuals.
               </h3>
               <p className="text-sm text-slate-800">
-                Mutuals seats you with people connected by mutual friends — not necessarily similar, but all one hop away in
+                Mutuals seats you with people connected by mutual friends — not necessarily similar, but all one degree away in
                 different directions.
               </p>
             </div>
@@ -428,7 +428,7 @@ export default function MutualsLanding() {
         {/* NETWORK SECTION (renamed from "Under the hood") */}
         <section className="mt-20 border-t border-[#d3d3ec] pt-10">
           <h2 className="text-center text-2xl font-semibold text-slate-900">
-            How mutuals connects you
+            How Mutuals connects you
           </h2>
 
           <div className="mt-10 grid gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)] md:items-start">
@@ -462,7 +462,7 @@ export default function MutualsLanding() {
       </main>
 
       <footer className="border-t border-[#d3d3ec] py-6 text-center text-xs text-slate-500">
-        © {new Date().getFullYear()} mutuals
+        © {new Date().getFullYear()} Mutuals
       </footer>
     </div>
   );
