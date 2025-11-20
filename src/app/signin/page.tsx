@@ -55,12 +55,10 @@ export default function SignInPage() {
       }
 
       if (!responsePayload?.student?.id) {
-        throw new Error("We couldn’t locate your student profile.");
+        throw new Error("We couldn't locate your student profile.");
       }
 
-      router.push(
-        responsePayload.surveyPath ?? `/survey?studentId=${responsePayload.student.id}`,
-      );
+      router.push("/");
       setStatus("success");
       setEmail("");
       setPassword("");

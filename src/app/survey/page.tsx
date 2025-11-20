@@ -143,11 +143,12 @@ function SurveyPageContent() {
   const searchParams = useSearchParams();
   const rawStudentId = searchParams.get("studentId");
   const normalizedStudentId = rawStudentId?.trim() ?? null;
-  const studentId =
+  const urlStudentId =
     normalizedStudentId && isValidStudentIdentifier(normalizedStudentId)
       ? normalizedStudentId
       : null;
 
+  const [studentId, setStudentId] = useState<string | null>(urlStudentId);
   const [email, setEmail] = useState<string | null>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -162,6 +163,31 @@ function SurveyPageContent() {
   const [ucBerkeleyChoice, setUcBerkeleyChoice] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "success">("idle");
   const [error, setError] = useState<string | null>(null);
+
+  // Check for existing session on mount
+  useEffect(() => {
+    const checkSession = async () => {
+      if (studentId) {
+        // Already have studentId from URL, skip session check
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/session");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.authenticated && data.student?.id) {
+            setStudentId(data.student.id);
+            setEmail(data.student.email);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to check session:", error);
+      }
+    };
+
+    checkSession();
+  }, [studentId]);
 
   // Fetch CSV data once on mount
   useEffect(() => {

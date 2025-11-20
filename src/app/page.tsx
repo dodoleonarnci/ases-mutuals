@@ -252,6 +252,8 @@ const NetworkViz = ({ stage }: { stage: number }) => {
 export default function MutualsLanding() {
   const [stage, setStage] = useState(0);
   const [signupCount, setSignupCount] = useState<number | null>(null);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
@@ -289,6 +291,34 @@ export default function MutualsLanding() {
     fetchSignupCount();
   }, []);
 
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch("/api/session");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.authenticated && data.student) {
+            setIsSignedIn(true);
+            setUserEmail(data.student.email);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to check session:", error);
+      }
+    };
+    checkSession();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", { method: "POST" });
+      setIsSignedIn(false);
+      setUserEmail(null);
+    } catch (error) {
+      console.error("Failed to logout:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f4f4fb] text-slate-900">
       {/* NAV */}
@@ -303,18 +333,42 @@ export default function MutualsLanding() {
             <span className="text-lg font-semibold tracking-tight">Mutuals</span>
           </div>
           <div className="flex items-center gap-3">
-            <Link
-              href="/signin"
-              className="rounded-full border border-slate-400/60 px-4 py-1.5 text-sm font-semibold text-slate-900 transition hover:border-slate-900 hover:text-slate-950"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/signup"
-              className="hidden rounded-full bg-slate-950 px-4 py-1.5 text-sm font-semibold text-slate-50 shadow-md hover:bg-slate-900 sm:inline-flex"
-            >
-              Sign up
-            </Link>
+            {isSignedIn ? (
+              <>
+                <Link
+                  href="/survey"
+                  className="rounded-full border border-slate-400/60 px-4 py-1.5 text-sm font-semibold text-slate-900 transition hover:border-slate-900 hover:text-slate-950"
+                >
+                  Survey
+                </Link>
+                <div className="flex items-center gap-2">
+                  <span className="hidden text-sm text-slate-600 sm:inline">
+                    {userEmail}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    className="rounded-full bg-slate-950 px-4 py-1.5 text-sm font-semibold text-slate-50 shadow-md hover:bg-slate-900"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/signin"
+                  className="rounded-full border border-slate-400/60 px-4 py-1.5 text-sm font-semibold text-slate-900 transition hover:border-slate-900 hover:text-slate-950"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="hidden rounded-full bg-slate-950 px-4 py-1.5 text-sm font-semibold text-slate-50 shadow-md hover:bg-slate-900 sm:inline-flex"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -338,14 +392,24 @@ export default function MutualsLanding() {
                 </p>
 
                 <div className="flex flex-wrap items-center gap-3 pt-1">
-                  <Link href="/signup" className="rounded-full bg-slate-950 px-6 py-2.5 text-sm font-semibold text-slate-50 shadow-md hover:bg-slate-900">
-                    {signupCount !== null
-                      ? `Join ${signupCount * 2 + 237} others in the network`
-                      : "Join our network"}
-                  </Link>
-                  <span className="text-xs text-slate-100/80">
-                    Friends don&apos;t have to start as complete strangers.
-                  </span>
+                  {isSignedIn ? (
+                    <>
+                      <Link href="/survey" className="rounded-full bg-slate-950 px-6 py-2.5 text-sm font-semibold text-slate-50 shadow-md hover:bg-slate-900">
+                        Update your survey
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/signup" className="rounded-full bg-slate-950 px-6 py-2.5 text-sm font-semibold text-slate-50 shadow-md hover:bg-slate-900">
+                        {signupCount !== null
+                          ? `Join ${signupCount * 2 + 237} others in the network`
+                          : "Join our network"}
+                      </Link>
+                      <span className="text-xs text-slate-100/80">
+                        Friends don&apos;t have to start as complete strangers.
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
 

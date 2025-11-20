@@ -6,6 +6,7 @@ import { deriveStudentIdentifier } from "@/lib/identifiers";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { formatZodError, signupInsertSchema } from "@/lib/validators";
 import { getStudentNamesFromCSV } from "@/lib/studentData";
+import { setSession } from "@/lib/session";
 
 export async function GET() {
   const { data, error } = await createServiceRoleClient()
@@ -83,6 +84,11 @@ export async function POST(request: Request) {
           .eq("id", existingStudent.id);
         existingStudent.user_id = userId;
       }
+      // Set session cookie
+      await setSession({
+        studentId: existingStudent.id,
+        email: existingStudent.email,
+      });
       return NextResponse.json(
         { student: existingStudent, surveyPath: `/survey?studentId=${existingStudent.id}` },
         { status: 200 },
@@ -98,6 +104,12 @@ export async function POST(request: Request) {
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
+    // Set session cookie
+    await setSession({
+      studentId: student.id,
+      email: student.email,
+    });
 
     return NextResponse.json(
       { student, surveyPath: `/survey?studentId=${student.id}` },

@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { parseJsonRequest } from "@/lib/api-helpers";
 import { formatZodError, signinSchema } from "@/lib/validators";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { setSession } from "@/lib/session";
 
 export async function POST(request: Request) {
   try {
@@ -58,10 +59,16 @@ export async function POST(request: Request) {
 
     if (!student) {
       return NextResponse.json(
-        { error: "We couldn’t find a student profile for that account." },
+        { error: "We couldn't find a student profile for that account." },
         { status: 404 },
       );
     }
+
+    // Set session cookie
+    await setSession({
+      studentId: student.id,
+      email: student.email,
+    });
 
     return NextResponse.json(
       { student, surveyPath: `/survey?studentId=${student.id}` },
