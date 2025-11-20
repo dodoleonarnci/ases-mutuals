@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [instagram, setInstagram] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
   const router = useRouter();
@@ -16,42 +19,65 @@ export default function SignUpPage() {
     setMessage(null);
 
     try {
+      const requestBody = {
+        email: email.trim().toLowerCase(),
+        password,
+        ...(phone.trim() ? { phone: phone.trim() } : {}),
+        ...(instagram.trim()
+          ? {
+              instagram_handle: instagram.trim().startsWith("@")
+                ? instagram.trim()
+                : `@${instagram.trim()}`,
+            }
+          : {}),
+      };
+
       const response = await fetch("/api/signups", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+        body: JSON.stringify(requestBody),
       });
 
       // Check if response has content before parsing JSON
       const contentType = response.headers.get("content-type");
       const text = await response.text();
       
-      let payload: any;
+      type SignupResponse = {
+        student?: { id?: string };
+        surveyPath?: string;
+        error?: string;
+      };
+      let responsePayload: SignupResponse = {};
       if (text && contentType?.includes("application/json")) {
         try {
-          payload = JSON.parse(text);
-        } catch (parseError) {
+          responsePayload = JSON.parse(text);
+        } catch {
           throw new Error("Invalid response from server. Please try again.");
         }
       } else {
         // If response is not JSON or is empty, create a payload with error
-        payload = text 
+        responsePayload = text 
           ? { error: text } 
           : { error: "Unable to save signup. Please try again." };
       }
 
       if (!response.ok) {
-        throw new Error(payload.error ?? "Unable to save signup");
+        throw new Error(responsePayload.error ?? "Unable to save signup");
       }
 
-      if (!payload?.student?.id) {
+      if (!responsePayload?.student?.id) {
         throw new Error("Unable to create your account. Please try again.");
       }
 
-      router.push(payload.surveyPath ?? `/survey?studentId=${payload.student.id}`);
+      router.push(
+        responsePayload.surveyPath ?? `/survey?studentId=${responsePayload.student.id}`,
+      );
       setEmail("");
+      setPassword("");
+      setPhone("");
+      setInstagram("");
       setStatus("success");
     } catch (error) {
       setStatus("error");
@@ -95,6 +121,50 @@ export default function SignUpPage() {
             We&apos;ll only use this for algorithmic matching.
           </p>
 
+          <label htmlFor="password" className="mt-6 block text-sm font-medium text-slate-800">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            required
+            minLength={8}
+            autoComplete="new-password"
+            placeholder="At least 8 characters"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+          />
+          <p className="mt-2 text-xs text-slate-500">
+            A simple password protects your survey responses until SAML logins ship.
+          </p>
+
+          <label htmlFor="phone" className="mt-6 block text-sm font-medium text-slate-800">
+            Phone number <span className="text-slate-400">(optional)</span>
+          </label>
+          <input
+            id="phone"
+            type="tel"
+            autoComplete="tel"
+            placeholder="(650) 555-1234"
+            value={phone}
+            onChange={(event) => setPhone(event.target.value)}
+            className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+          />
+
+          <label htmlFor="instagram" className="mt-6 block text-sm font-medium text-slate-800">
+            Instagram handle <span className="text-slate-400">(optional)</span>
+          </label>
+          <input
+            id="instagram"
+            type="text"
+            autoComplete="off"
+            placeholder="@cardinal"
+            value={instagram}
+            onChange={(event) => setInstagram(event.target.value)}
+            className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+          />
+          
           <button
             type="submit"
             disabled={status === "loading"}

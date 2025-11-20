@@ -286,6 +286,20 @@ export default function MutualsLanding() {
             </div>
             <span className="text-lg font-semibold tracking-tight">Mutuals</span>
           </div>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/signin"
+              className="rounded-full border border-slate-400/60 px-4 py-1.5 text-sm font-semibold text-slate-900 transition hover:border-slate-900 hover:text-slate-950"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/signup"
+              className="hidden rounded-full bg-slate-950 px-4 py-1.5 text-sm font-semibold text-slate-50 shadow-md hover:bg-slate-900 sm:inline-flex"
+            >
+              Sign up
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -312,7 +326,7 @@ export default function MutualsLanding() {
                     Get seated this week
                   </Link>
                   <span className="text-xs text-slate-100/80">
-                    Friends don't have to start as complete strangers.
+                    Friends don&apos;t have to start as complete strangers.
                   </span>
                 </div>
               </div>
@@ -391,7 +405,7 @@ export default function MutualsLanding() {
               </p>
             </div>
             <div className="rounded-2xl bg-white/95 p-4 shadow">
-              <p className="text-xs font-medium text-slate-500">This week's gang</p>
+              <p className="text-xs font-medium text-slate-500">This week&apos;s gang</p>
 
               <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
                 {[

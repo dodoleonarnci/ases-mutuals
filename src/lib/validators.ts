@@ -22,6 +22,28 @@ export const studentInsertSchema = z.object({
 
 export const signupInsertSchema = z.object({
   email: stanfordEmailSchema,
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(128, "Password must be at most 128 characters"),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^[\d\s()+\-]{7,20}$/, "Phone must be 7-20 digits and can include +, -, ()")
+    .optional(),
+  instagram_handle: z
+    .string()
+    .trim()
+    .regex(/^@?[A-Za-z0-9._]{1,30}$/, "Instagram handle must be 1-30 letters, numbers, . or _")
+    .optional(),
+});
+
+export const signinSchema = z.object({
+  email: stanfordEmailSchema,
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(128, "Password must be at most 128 characters"),
 });
 
 export const studentSurveySchema = z.object({

@@ -21,7 +21,7 @@ interface StudentDisplay {
   emailIdentifier: string; // email without @stanford.edu
 }
 
-const CLASS_YEARS = ["2025", "2026", "2027", "2028", "2029", "2030"];
+const CLASS_YEARS = ["2026", "2027", "2028", "2029"];
 const DORM_OPTIONS = [
   "Crothers",
   "FloMo",
@@ -34,6 +34,7 @@ const DORM_OPTIONS = [
   "Wilbur",
   "Roble",
   "Toyon",
+  "Mirrielees",
   "Ujamaa",
   "Off Campus",
 ];

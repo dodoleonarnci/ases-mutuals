@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
 
 import { parseJsonRequest } from "@/lib/api-helpers";
 import { deriveStudentIdentifier } from "@/lib/identifiers";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { formatZodError, signupInsertSchema } from "@/lib/validators";
-import { getStudentNamesFromCSV, type StudentData } from "@/lib/studentData";
+import { getStudentNamesFromCSV } from "@/lib/studentData";
 
 export async function GET() {
   const { data, error } = await createServiceRoleClient()
@@ -36,8 +37,17 @@ export async function POST(request: Request) {
       );
     }
 
+    const instagramHandle = parsed.data.instagram_handle
+      ? parsed.data.instagram_handle.startsWith("@")
+        ? parsed.data.instagram_handle
+        : `@${parsed.data.instagram_handle}`
+      : null;
+
     const normalized = {
       email: parsed.data.email.trim().toLowerCase(),
+      password_hash: await bcrypt.hash(parsed.data.password, 10),
+      phone: parsed.data.phone ?? null,
+      instagram_handle: instagramHandle,
     };
     const studentId = deriveStudentIdentifier(normalized.email);
 
