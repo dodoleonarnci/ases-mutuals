@@ -117,9 +117,6 @@ export default function SignUpPage() {
             onChange={(event) => setEmail(event.target.value)}
             className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
           />
-          <p className="mt-2 text-xs text-slate-500">
-            We&apos;ll only use this for algorithmic matching.
-          </p>
 
           <label htmlFor="password" className="mt-6 block text-sm font-medium text-slate-800">
             Password
@@ -136,7 +133,7 @@ export default function SignUpPage() {
             className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
           />
           <p className="mt-2 text-xs text-slate-500">
-            A simple password protects your survey responses until SAML logins ship.
+            A simple password protects your survey responses until Stanford SSO logins ship.
           </p>
 
           <label htmlFor="phone" className="mt-6 block text-sm font-medium text-slate-800">

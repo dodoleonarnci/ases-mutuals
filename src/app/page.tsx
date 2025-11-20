@@ -251,6 +251,7 @@ const NetworkViz = ({ stage }: { stage: number }) => {
 
 export default function MutualsLanding() {
   const [stage, setStage] = useState(0);
+  const [signupCount, setSignupCount] = useState<number | null>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
@@ -271,6 +272,21 @@ export default function MutualsLanding() {
 
     sectionRefs.current.forEach((el) => el && observer.observe(el));
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const fetchSignupCount = async () => {
+      try {
+        const response = await fetch("/api/signups/count", { cache: "no-store" });
+        if (response.ok) {
+          const data = await response.json();
+          setSignupCount(data.count ?? 0);
+        }
+      } catch (error) {
+        console.error("Failed to fetch signup count:", error);
+      }
+    };
+    fetchSignupCount();
   }, []);
 
   return (
@@ -323,7 +339,9 @@ export default function MutualsLanding() {
 
                 <div className="flex flex-wrap items-center gap-3 pt-1">
                   <Link href="/signup" className="rounded-full bg-slate-950 px-6 py-2.5 text-sm font-semibold text-slate-50 shadow-md hover:bg-slate-900">
-                    Get seated this week
+                    {signupCount !== null
+                      ? `Join ${signupCount * 2 + 237} others in the network`
+                      : "Join our network"}
                   </Link>
                   <span className="text-xs text-slate-100/80">
                     Friends don&apos;t have to start as complete strangers.
