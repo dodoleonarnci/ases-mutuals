@@ -92,7 +92,7 @@ export default function SignUpPage() {
             className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
           />
           <p className="mt-2 text-xs text-slate-500">
-            We&apos;ll only use this to share beta access and onboarding info.
+            We&apos;ll only use this for algorithmic matching.
           </p>
 
           <button
