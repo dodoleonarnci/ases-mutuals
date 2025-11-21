@@ -1,279 +1,763 @@
 "use client";
 
-import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Users, Zap, Coffee, ArrowRight, Sparkles, Heart, LogOut, User, FileText, Calendar, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 
-/* -----------------------------------------------
-   NETWORK GRAPH DATA
-------------------------------------------------- */
+// --- CSS Styles for Custom Animations ---
+const styles = `
+  html {
+    scroll-behavior: smooth;
+  }
+  @keyframes blob {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(0px, 0px) scale(1); }
+  }
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
+  }
+  @keyframes spin-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+  }
+  .animate-spin-reverse {
+    animation: spin-reverse 20s linear infinite;
+  }
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-scroll {
+    animation: scroll 20s linear infinite;
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.3); }
+    50% { transform: scale(1); }
+    75% { transform: scale(1.3); }
+  }
+  .animate-heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+`;
 
-type NodeType = "you" | "friend" | "mutual" | "new";
+// --- Components ---
 
-interface Node {
-  id: string;
-  x: number;
-  y: number;
-  label: string;
-  type: NodeType;
-}
+// Recreated Logo based on the uploaded image
+const Logo = ({ className = "", href = "/" }: { className?: string, href?: string }) => (
+  <Link href={href} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+    <div className={`flex items-center gap-2 ${className}`}>
+      <div className="relative w-10 h-10 flex-shrink-0">
+        <div className="absolute left-0 top-0 w-7 h-7 rounded-full bg-[#6366f1] mix-blend-multiply opacity-90"></div>
+        <div className="absolute right-0 bottom-0 w-7 h-7 rounded-full bg-[#ec4899] mix-blend-multiply opacity-90"></div>
+      </div>
+      <span className="text-2xl font-black tracking-tight text-slate-900 font-sans">Mutuals</span>
+    </div>
+  </Link>
+);
 
-interface Edge {
-  from: string;
-  to: string;
-  stage: number; // which scroll block reveals this edge
-}
+// Custom Hook for Intersection Observer (Scroll Animations)
+const useOnScreen = (ref: React.RefObject<any>, rootMargin = "0px") => {
+  const [isIntersecting, setIntersecting] = useState(false);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIntersecting(true);
+      },
+      { rootMargin, threshold: 0.1 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => ref.current && observer.unobserve(ref.current);
+  }, [ref, rootMargin]);
+  return isIntersecting;
+};
 
-const NODES: Node[] = [
-  { id: "you", x: 200, y: 260, label: "You", type: "you" },
+// Animated Background Canvas (Connecting Nodes)
+const ConnectionCanvas = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  { id: "f1", x: 110, y: 185, label: "Jordan", type: "friend" },
-  { id: "f2", x: 290, y: 190, label: "Maya", type: "friend" },
-  { id: "f3", x: 80, y: 285, label: "Chris", type: "friend" },
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-  { id: "m1", x: 65, y: 90, label: "Taylor (mutual)", type: "mutual" },
-  { id: "m2", x: 210, y: 80, label: "Sam (mutual)", type: "mutual" },
-  { id: "m3", x: 335, y: 95, label: "Priya (mutual)", type: "mutual" },
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
 
-  { id: "new1", x: 320, y: 285, label: "New dinner friend", type: "new" },
-];
+    const nodes: any[] = [];
+    const nodeCount = window.innerWidth < 768 ? 15 : 40; // Reduced nodes for mobile
+    const connectionDistance = window.innerWidth < 768 ? 100 : 150;
 
-const EDGES: Edge[] = [
-  // Stage 0 – you + close friends
-  { from: "you", to: "f1", stage: 0 },
-  { from: "you", to: "f2", stage: 0 },
-  { from: "you", to: "f3", stage: 0 },
+    // Create nodes
+    for (let i = 0; i < nodeCount; i++) {
+      nodes.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 1.5,
+        vy: (Math.random() - 0.5) * 1.5,
+        radius: Math.random() * 4 + 2,
+        color: Math.random() > 0.5 ? '#6366f1' : '#ec4899' // Blue or Pink
+      });
+    }
 
-  // Stage 1 – friends → mutuals
-  { from: "f1", to: "m1", stage: 1 },
-  { from: "f2", to: "m2", stage: 1 },
-  { from: "f3", to: "m3", stage: 1 },
+    let animationFrameId: number;
 
-  // Stage 2 – mutuals connect (campus fabric)
-  { from: "m1", to: "m2", stage: 2 },
-  { from: "m2", to: "m3", stage: 2 },
+    const animate = () => {
+      ctx.clearRect(0, 0, width, height);
+      
+      // Update and draw nodes
+      nodes.forEach(node => {
+        node.x += node.vx;
+        node.y += node.vy;
 
-  // Stage 3 – path to someone new
-  { from: "m2", to: "new1", stage: 3 },
-  { from: "you", to: "new1", stage: 3 },
-];
+        // Bounce off walls
+        if (node.x < 0 || node.x > width) node.vx *= -1;
+        if (node.y < 0 || node.y > height) node.vy *= -1;
 
-const NETWORK_STORY = [
-  {
-    id: "circles",
-    stage: 0,
-    title: "We start with your everyday circle.",
-    body: "Your week loops through the same people — your dorm, major, and clubs. mutuals starts by understanding that orbit: who you live with, study with, and always see.",
-  },
-  {
-    id: "mutuals",
-    stage: 1,
-    title: "Then we look at your friends' circles.",
-    body: "Each friend has their own people: classmates, club friends, coworkers. We map those friends-of-friends to see where new connections could come from.",
-  },
-  {
-    id: "algo",
-    stage: 2,
-    title: "Everyone gets a good match, unlike da****op",
-    body: (
-      <>
-        We use a variant of the{" "}
-        <a
-          href="https://en.wikipedia.org/wiki/Sinkhorn%27s_theorem"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-indigo-600 underline hover:text-indigo-700"
-        >
-          Sinkhorn-Knopp algorithm
-        </a>{" "}
-        from entropic optimal transport to ensure optimized total utility, while meeting individual baselines.
-      </>
-    ),
-  },
-  {
-    id: "campus-web",
-    stage: 3,
-    title: "We connect the campus, not just your side.",
-    body: "We pay attention to where your world doesn't usually cross — east and west campus, different majors, other social pockets — and look for ways to bridge them through mutuals.",
-  },
-];
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = node.color;
+        ctx.fill();
+      });
 
-/* -----------------------------------------------
-   NETWORK VISUAL COMPONENT
-------------------------------------------------- */
+      // Draw connections
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
 
-function getNodeById(id: string): Node {
-  const node = NODES.find((n) => n.id === id);
-  if (!node) throw new Error(`Missing node ${id}`);
-  return node;
-}
+          if (distance < connectionDistance) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.strokeStyle = `rgba(100, 116, 139, ${1 - distance / connectionDistance})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+      animationFrameId = requestAnimationFrame(animate);
+    };
 
-const NetworkViz = ({ stage }: { stage: number }) => {
-  const visibleEdges = EDGES.filter((e) => e.stage <= stage);
+    animate();
+
+    const handleResize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full -z-10 opacity-90 pointer-events-none bg-white" />;
+};
+
+// Reusable Animated Section
+const FadeInSection = ({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) => {
+  const ref = useRef(null);
+  const onScreen = useOnScreen(ref, "-50px");
 
   return (
-    <div className="relative mx-auto flex max-w-md justify-center">
-      {/* soft brand-colored glow – slightly bolder blue/pink */}
-      <div className="pointer-events-none absolute -inset-10 -z-10 rounded-[2.5rem] bg-[radial-gradient(circle_at_top,_rgba(79,70,229,0.45),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(236,72,153,0.45),_transparent_55%)] blur-3xl" />
+    <div
+      ref={ref}
+      className={`transition-all duration-1000 ease-out transform ${
+        onScreen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+      } ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+};
 
-      <div className="w-full rounded-[2.5rem] border border-slate-200 bg-white p-5 shadow-[0_28px_90px_rgba(15,23,42,0.22)]">
-        <div className="mb-4 flex items-center justify-between text-xs text-slate-500">
-          <span className="rounded-full bg-indigo-50 px-3 py-1 text-[10px] font-medium uppercase tracking-wide text-indigo-800">
-            your campus network
+const Navbar = () => {
+  return (
+    <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b-2 border-slate-100">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+        <Logo href="/" />
+        <div className="flex items-center gap-4">
+          <Link 
+            href="/signin"
+            className="hidden md:block text-slate-600 font-bold hover:text-indigo-600 transition-colors"
+          >
+            Sign in
+          </Link>
+          <Link 
+            href="/signup"
+            className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-6 rounded-full transition-transform hover:scale-105 active:scale-95 shadow-[3px_3px_0px_0px_#6366f1]"
+          >
+            Sign up
+          </Link>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+const Hero = ({ signupCount }: { signupCount: number | null }) => {
+  return (
+    <header className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+      <ConnectionCanvas />
+      
+      {/* Decorative Blobs */}
+      <div className="absolute top-20 left-10 w-32 h-32 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob"></div>
+      <div className="absolute top-40 right-10 w-32 h-32 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob animation-delay-2000"></div>
+      <div className="absolute bottom-20 left-1/2 w-48 h-48 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob animation-delay-4000"></div>
+
+      <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+        <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-white border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-indigo-700 font-bold text-sm uppercase tracking-wide transform -rotate-2 hover:rotate-0 transition-transform cursor-default">
+          <Sparkles className="w-4 h-4 text-pink-500" />
+          <span>Stanford Undergrads</span>
+        </div>
+        
+        <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-[0.95] mb-6">
+          Make friends, <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">
+            not connections.
           </span>
+        </h1>
+        
+        <p className="text-xl md:text-2xl text-slate-600 mb-10 max-w-3xl mx-auto font-medium leading-relaxed">
+          Every week, we'll seat you at a dinner table with <span className="text-indigo-600 font-black decoration-indigo-300 decoration-4 underline-offset-4 underline">new</span> people, but everyone shares a <span className="text-pink-600 font-black decoration-pink-300 decoration-4 underline-offset-4 underline">mutual friend</span>.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center relative z-20">
+          <Link 
+            href="/signup"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold py-4 px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2 group"
+          >
+            <Users className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            {signupCount !== null
+              ? `Join network of ${signupCount * 3 + 267} students`
+              : "Join our network"}
+          </Link>
+          <Link 
+            href="/signin"
+            className="bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 text-lg font-bold py-4 px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#e2e8f0] flex items-center gap-2"
+          >
+            How it works <ArrowRight className="w-5 h-5" />
+          </Link>
         </div>
+      </div>
+    </header>
+  );
+};
 
-        <div className="relative mx-auto aspect-square max-w-xs">
-          <svg viewBox="0 0 400 400" className="h-full w-full">
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path
-                  d="M 40 0 L 0 0 0 40"
-                  fill="none"
-                  stroke="rgba(226,232,240,0.85)"
-                  strokeWidth="1"
-                />
-              </pattern>
-            </defs>
+const StepCard = ({ icon: Icon, title, desc, color, number }: {icon: any, title: string, desc: string, color: string, number: string}) => (
+  <div className="relative group h-full">
+    {/* Background Layer - Fixed "Popped" State (No Hover Needed) */}
+    <div className={`absolute inset-0 bg-${color}-400 rounded-3xl transform translate-x-3 translate-y-3 md:translate-x-4 md:translate-y-4 border-2 border-slate-900`}></div>
+    
+    {/* Content Layer */}
+    <div className="relative bg-white border-2 border-slate-900 p-6 md:p-8 rounded-3xl h-full flex flex-col items-start transition-transform group-hover:-translate-y-1">
+      <div className={`w-14 h-14 bg-${color}-100 rounded-xl flex items-center justify-center mb-6 border-2 border-${color}-200 shadow-sm`}>
+        <Icon className={`w-7 h-7 text-${color}-600`} />
+      </div>
+      <span className="absolute top-6 right-8 text-6xl font-black text-slate-100 -z-10 select-none">{number}</span>
+      <h3 className="text-2xl font-bold text-slate-900 mb-3">{title}</h3>
+      <p className="text-slate-600 font-medium leading-relaxed">{desc}</p>
+    </div>
+  </div>
+);
 
-            <rect width="400" height="400" fill="url(#grid)" rx={24} />
-
-            {/* edges */}
-            {visibleEdges.map((edge, idx) => {
-              const from = getNodeById(edge.from);
-              const to = getNodeById(edge.to);
-              const isIntroEdge =
-                edge.stage === 3 &&
-                ((edge.from === "you" && edge.to === "new1") ||
-                  (edge.from === "new1" && edge.to === "you"));
-
-              return (
-                <line
-                  key={`${edge.from}-${edge.to}-${idx}`}
-                  x1={from.x}
-                  y1={from.y}
-                  x2={to.x}
-                  y2={to.y}
-                  stroke={isIntroEdge ? "rgba(56,189,248,0.98)" : "rgba(148,163,184,0.85)"}
-                  strokeWidth={isIntroEdge ? 3 : 2}
-                  strokeLinecap="round"
-                  className={isIntroEdge ? "drop-shadow-[0_0_10px_rgba(56,189,248,0.9)]" : ""}
-                />
-              );
-            })}
-
-            {/* nodes */}
-            {NODES.map((node) => {
-              const isActive =
-                node.id === "you" ||
-                (node.type === "friend" && stage >= 0) ||
-                (node.type === "mutual" && stage >= 1) ||
-                (node.type === "new" && stage >= 3);
-
-              const radiusOuter =
-                node.type === "you" ? 15 : node.type === "new" ? 13 : node.type === "mutual" ? 12 : 11;
-              const radiusInner = radiusOuter - 4;
-
-              const ringColor =
-                node.type === "you"
-                  ? "#22c55e" // green ring for you
-                  : node.type === "friend"
-                  ? "#3b82f6" // blue
-                  : node.type === "mutual"
-                  ? "#ec4899" // pink
-                  : "#f59e0b"; // amber for new intro
-
-              return (
-                <g key={node.id} className="transition-all duration-500">
-                  {node.id === "you" && (
-                    <circle
-                      cx={node.x}
-                      cy={node.y}
-                      r={radiusOuter + 8}
-                      stroke="rgba(34,197,94,0.85)"
-                      strokeWidth={1.7}
-                      fill="none"
-                      className="animate-pulse"
-                    />
-                  )}
-
-                  {/* outer ring */}
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={radiusOuter}
-                    fill={ringColor}
-                    opacity={isActive ? 0.9 : 0.5}
-                  />
-                  {/* inner avatar circle */}
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={radiusInner}
-                    fill={isActive ? "#ffffff" : "#f9fafb"}
-                  />
-
-                  {/* label text */}
-                  {node.id === "you" ? (
-                    <text
-                      x={node.x}
-                      y={node.y + 3}
-                      textAnchor="middle"
-                      fontSize="9"
-                      fill="#16a34a"
-                      fontWeight={700}
-                    >
-                      YOU
-                    </text>
-                  ) : null}
-
-                  <text
-                    x={node.x}
-                    y={node.y + radiusOuter + 11}
-                    textAnchor="middle"
-                    fontSize={9}
-                    fill={isActive ? "rgba(30,64,175,0.98)" : "rgba(148,163,184,0.9)"}
-                  >
-                    {node.label}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
+const HowItWorks = () => {
+  return (
+    <section className="pb-24 pt-12 bg-white relative overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+          <FadeInSection delay={100}>
+            <StepCard 
+              number="01"
+              color="indigo"
+              icon={Zap}
+              title="Join the Pool"
+              desc="Sign up with your Stanford email. Tell us a few people you know to kickstart your graph."
+            />
+          </FadeInSection>
+          <FadeInSection delay={200}>
+            <StepCard 
+              number="02"
+              color="pink"
+              icon={Users}
+              title="We Find Links"
+              desc="Our algorithm groups students who share at least one mutual friend at the table."
+            />
+          </FadeInSection>
+          <FadeInSection delay={300}>
+            <StepCard 
+              number="03"
+              color="purple"
+              icon={Coffee}
+              title="Meet Your Besties"
+              desc="Get a text with your location. Show up, chow down, and watch your network multiply."
+            />
+          </FadeInSection>
         </div>
+      </div>
+    </section>
+  );
+};
+
+const VibeCheck = () => {
+  return (
+    <section id="how-it-works" className="py-24 bg-slate-900 text-white relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#6366f1 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
+
+      <div className="max-w-6xl mx-auto px-4 relative z-10">
+        <FadeInSection className="text-center mb-20">
+          <h2 className="text-4xl md:text-6xl font-black text-white mb-6">The Mutuals Algorithm™</h2>
+        </FadeInSection>
+
+        <div className="grid md:grid-cols-2 gap-16 items-center">
+          <FadeInSection>
+            <div className="relative p-8">
+               {/* Abstract Representation of the 'Table' */}
+              <div className="aspect-square max-w-md mx-auto rounded-full bg-slate-800 border-4 border-slate-700 relative flex items-center justify-center shadow-2xl">
+                 <div className="absolute inset-0 animate-spin-slow">
+                    {/* Top: Sarah */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 flex flex-col items-center justify-center">
+                        <div className="animate-spin-reverse flex flex-col items-center">
+                            <div className="w-16 h-16 md:w-20 md:h-20 bg-pink-400 rounded-full border-4 border-slate-900 flex items-center justify-center text-2xl md:text-3xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-pointer">👱‍♀️</div>
+                            <div className="mt-2 bg-slate-900 text-white text-xs font-bold px-2 py-1 rounded-full border-2 border-slate-700">Sarah</div>
+                        </div>
+                    </div>
+                    
+                    {/* Bottom: Josh */}
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-24 flex flex-col items-center justify-center">
+                        <div className="animate-spin-reverse flex flex-col items-center">
+                            <div className="w-16 h-16 md:w-20 md:h-20 bg-indigo-400 rounded-full border-4 border-slate-900 flex items-center justify-center text-2xl md:text-3xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-pointer">🧑🏽‍🦱</div>
+                            <div className="mt-2 bg-slate-900 text-white text-xs font-bold px-2 py-1 rounded-full border-2 border-slate-700">Josh</div>
+                        </div>
+                    </div>
+
+                    {/* Left: Mutual */}
+                    <div className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 w-24 flex flex-col items-center justify-center">
+                        <div className="animate-spin-reverse flex flex-col items-center">
+                            <div className="relative">
+                                <div className="w-16 h-16 md:w-20 md:h-20 bg-yellow-400 rounded-full border-4 border-slate-900 flex items-center justify-center text-2xl md:text-3xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-pointer z-10">👩🏻</div>
+                                <div className="absolute -top-4 -right-2 text-2xl z-20 drop-shadow-md transform rotate-12">👑</div>
+                            </div>
+                            <div className="mt-2 bg-yellow-400 text-slate-900 text-xs font-black px-2 py-1 rounded-full border-2 border-slate-900 uppercase tracking-wider">Mutual</div>
+                        </div>
+                    </div>
+
+                    {/* Right: Sam */}
+                    <div className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 w-24 flex flex-col items-center justify-center">
+                        <div className="animate-spin-reverse flex flex-col items-center">
+                            <div className="w-16 h-16 md:w-20 md:h-20 bg-purple-400 rounded-full border-4 border-slate-900 flex items-center justify-center text-2xl md:text-3xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-pointer">🧔</div>
+                            <div className="mt-2 bg-slate-900 text-white text-xs font-bold px-2 py-1 rounded-full border-2 border-slate-700">Sam</div>
+                        </div>
+                    </div>
+                 </div>
+                 
+                 {/* Center Plate */}
+                 <div className="w-24 h-24 md:w-32 md:h-32 bg-white rounded-full border-4 border-slate-200 flex items-center justify-center relative z-10">
+                    <div className="text-center">
+                        <div className="text-3xl md:text-4xl mb-1">🍽️</div>
+                    </div>
+                 </div>
+              </div>
+            </div>
+          </FadeInSection>
+
+          <FadeInSection delay={200}>
+            <ul className="space-y-8">
+              <li className="flex items-start gap-6 group">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-2xl font-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] transform group-hover:-rotate-6 transition-transform flex-shrink-0">1</div>
+                <p className="text-2xl md:text-4xl font-black text-white leading-tight">
+                  A friend always <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">joins you at the table.</span>
+                </p>
+              </li>
+              <li className="flex items-start gap-6 group">
+                <div className="w-12 h-12 rounded-2xl bg-pink-500 flex items-center justify-center text-2xl font-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] transform group-hover:rotate-6 transition-transform flex-shrink-0">2</div>
+                <p className="text-2xl md:text-4xl font-black text-white leading-tight">
+                  Everyone gets a good match, unlike <span className="text-pink-400 decoration-pink-400/30 underline underline-offset-4 decoration-4">da****op.</span>
+                </p>
+              </li>
+            </ul>
+          </FadeInSection>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const CTA = ({ signupCount }: { signupCount: number | null }) => (
+  <section className="py-16 md:py-24 bg-[#6366f1] relative overflow-hidden">
+    <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20">
+      <div className="absolute -top-24 -left-24 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-blob"></div>
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-pink-500 rounded-full mix-blend-overlay filter blur-3xl animate-blob animation-delay-2000"></div>
+    </div>
+
+    <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+      <FadeInSection>
+        <div className="mb-6 animate-float">
+            <span className="text-6xl">💌</span>
+        </div>
+        <h2 className="text-5xl md:text-7xl font-black text-white mb-8 tracking-tight drop-shadow-lg">
+          Your seat is waiting.
+        </h2>
+        <p className="text-indigo-100 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-medium">
+          {signupCount !== null
+            ? `Join network of ${signupCount * 3 + 267} students discovering their campus community, one dinner at a time.`
+            : "Join Stanford students discovering their campus community, one dinner at a time."}
+        </p>
+        <Link 
+          href="/signup"
+          className="w-full sm:w-auto bg-white text-indigo-600 hover:text-indigo-700 text-xl font-bold py-6 px-12 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,0.2)] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] flex items-center justify-center gap-3 mx-auto group border-b-4 border-slate-200"
+        >
+          <Sparkles className="w-6 h-6 group-hover:rotate-12 transition-transform text-pink-500" />
+          <span>Sign Up for This Week</span>
+        </Link>
+      </FadeInSection>
+    </div>
+  </section>
+);
+
+const Footer = () => (
+  <footer className="bg-white border-t-2 border-slate-100 py-12">
+    <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+      <Logo className="scale-75 origin-left" />
+      
+      <div className="flex items-center gap-2 text-slate-600 text-lg font-extrabold">
+        <span>Made with</span>
+        <Heart className="w-6 h-6 text-pink-500 fill-current animate-heartbeat" />
+        <span>at Stanford</span>
+      </div>
+    </div>
+  </footer>
+);
+
+// Authenticated Landing Page Components
+const AuthenticatedNavbar = ({ studentEmail, onLogout, loggingOut }: { studentEmail: string, onLogout: () => void, loggingOut: boolean }) => {
+  return (
+    <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b-2 border-slate-100">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+        <Logo href="/" />
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-2 text-slate-600 font-medium">
+            <User className="w-4 h-4" />
+            <span className="text-sm">{studentEmail}</span>
+          </div>
+          <button
+            onClick={onLogout}
+            disabled={loggingOut}
+            className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-6 rounded-full transition-transform hover:scale-105 active:scale-95 shadow-[3px_3px_0px_0px_#6366f1] flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+          >
+            {loggingOut ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="hidden sm:inline">Logging out...</span>
+              </>
+            ) : (
+              <>
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Log out</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+const AuthenticatedHero = ({ student }: { student: { id: string; email: string } }) => {
+  const [studentData, setStudentData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const response = await fetch(`/api/students/${student.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setStudentData(data.student);
+        }
+      } catch (error) {
+        console.error("Failed to fetch student data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStudentData();
+  }, [student.id]);
+
+  const firstName = studentData?.first_name || student.email.split('@')[0];
+  const surveyCompleted = studentData?.survey_completed || false;
+
+  return (
+    <header className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+      <ConnectionCanvas />
+      
+      {/* Decorative Blobs */}
+      <div className="absolute top-20 left-10 w-32 h-32 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob"></div>
+      <div className="absolute top-40 right-10 w-32 h-32 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob animation-delay-2000"></div>
+      <div className="absolute bottom-20 left-1/2 w-48 h-48 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob animation-delay-4000"></div>
+
+      <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+        <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-white border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-indigo-700 font-bold text-sm uppercase tracking-wide transform -rotate-2 hover:rotate-0 transition-transform cursor-default">
+          <Sparkles className="w-4 h-4 text-pink-500" />
+          <span>Welcome back!</span>
+        </div>
+        
+        <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-[0.95] mb-6">
+          Hey <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">{firstName}</span>,
+        </h1>
+        
+        <p className="text-xl md:text-2xl text-slate-600 mb-10 max-w-3xl mx-auto font-medium leading-relaxed">
+          Ready to make some <span className="text-indigo-600 font-black decoration-indigo-300 decoration-4 underline-offset-4 underline">mutual connections</span>?
+        </p>
+
+        {loading ? (
+          <div className="flex justify-center items-center py-8">
+            <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+          </div>
+        ) : (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center relative z-20">
+            {!surveyCompleted ? (
+              <>
+                <Link 
+                  href="/survey"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold py-4 px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2 group"
+                >
+                  <FileText className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  Complete Your Survey
+                </Link>
+                <Link 
+                  href="/whats-next"
+                  className="bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 text-lg font-bold py-4 px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#e2e8f0] flex items-center gap-2"
+                >
+                  Learn More <ArrowRight className="w-5 h-5" />
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link 
+                  href="/whats-next"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold py-4 px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2 group"
+                >
+                  <Calendar className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  What&apos;s Next?
+                </Link>
+                <Link 
+                  href="/survey"
+                  className="bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 text-lg font-bold py-4 px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#e2e8f0] flex items-center gap-2"
+                >
+                  Update Survey <ArrowRight className="w-5 h-5" />
+                </Link>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    </header>
+  );
+};
+
+const StatusCard = ({ icon: Icon, title, desc, status, color }: { icon: any, title: string, desc: string, status: 'completed' | 'pending', color: 'indigo' | 'pink' | 'purple' }) => {
+  const colorClasses = {
+    indigo: {
+      bg: 'bg-indigo-400',
+      bgLight: 'bg-indigo-100',
+      border: 'border-indigo-200',
+      text: 'text-indigo-600',
+    },
+    pink: {
+      bg: 'bg-pink-400',
+      bgLight: 'bg-pink-100',
+      border: 'border-pink-200',
+      text: 'text-pink-600',
+    },
+    purple: {
+      bg: 'bg-purple-400',
+      bgLight: 'bg-purple-100',
+      border: 'border-purple-200',
+      text: 'text-purple-600',
+    },
+  };
+
+  const colors = colorClasses[color];
+
+  return (
+    <div className="relative group h-full">
+      <div className={`absolute inset-0 ${colors.bg} rounded-3xl transform translate-x-3 translate-y-3 md:translate-x-4 md:translate-y-4 border-2 border-slate-900`}></div>
+      <div className="relative bg-white border-2 border-slate-900 p-6 md:p-8 rounded-3xl h-full flex flex-col items-start transition-transform group-hover:-translate-y-1">
+        <div className={`w-14 h-14 ${colors.bgLight} rounded-xl flex items-center justify-center mb-6 border-2 ${colors.border} shadow-sm`}>
+          <Icon className={`w-7 h-7 ${colors.text}`} />
+        </div>
+        <div className="flex items-center gap-2 mb-3">
+          <h3 className="text-2xl font-bold text-slate-900">{title}</h3>
+          {status === 'completed' ? (
+            <CheckCircle className="w-6 h-6 text-green-500" />
+          ) : (
+            <XCircle className="w-6 h-6 text-amber-500" />
+          )}
+        </div>
+        <p className="text-slate-600 font-medium leading-relaxed">{desc}</p>
       </div>
     </div>
   );
 };
 
-/* -----------------------------------------------
-   MAIN PAGE
-------------------------------------------------- */
-
-export default function MutualsLanding() {
-  const [stage, setStage] = useState(0);
-  const [signupCount, setSignupCount] = useState<number | null>(null);
-  const [isSignedIn, setIsSignedIn] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+const StatusSection = ({ student }: { student: { id: string; email: string } }) => {
+  const [studentData, setStudentData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (!visible.length) return;
-        const top = visible.sort(
-          (a, b) => (a.boundingClientRect.top || 0) - (b.boundingClientRect.top || 0)
-        )[0];
-        const idxAttr = top.target.getAttribute("data-network-index");
-        const idx = idxAttr ? Number(idxAttr) : 0;
-        const section = NETWORK_STORY[idx];
-        setStage(section.stage);
-      },
-      { threshold: 0.4, rootMargin: "-20% 0px -20% 0px" }
-    );
+    const fetchStudentData = async () => {
+      try {
+        const response = await fetch(`/api/students/${student.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setStudentData(data.student);
+        }
+      } catch (error) {
+        console.error("Failed to fetch student data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStudentData();
+  }, [student.id]);
 
-    sectionRefs.current.forEach((el) => el && observer.observe(el));
-    return () => observer.disconnect();
+  if (loading) {
+    return (
+      <section className="py-24 bg-white relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex justify-center items-center py-12">
+            <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const surveyCompleted = studentData?.survey_completed || false;
+
+  return (
+    <section className="py-24 bg-white relative overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4">
+        <FadeInSection className="text-center mb-12">
+          <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-4">Your Status</h2>
+        </FadeInSection>
+
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+          <FadeInSection delay={100}>
+            <StatusCard 
+              color="indigo"
+              icon={FileText}
+              title="Survey"
+              desc={surveyCompleted ? "You've completed your profile survey. You can update it anytime." : "Complete your profile survey to help us match you with the right people."}
+              status={surveyCompleted ? 'completed' : 'pending'}
+            />
+          </FadeInSection>
+          <FadeInSection delay={200}>
+            <StatusCard 
+              color="pink"
+              icon={Calendar}
+              title="Matches"
+              desc="We'll start matching after the break. Get ready to meet your mutual connections!"
+              status="pending"
+            />
+          </FadeInSection>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const AuthenticatedApp = ({ student }: { student: { id: string; email: string } }) => {
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      const response = await fetch("/api/logout", { method: "POST" });
+      if (response.ok) {
+        // Clear any cached auth state
+        window.location.href = "/";
+      } else {
+        // Even if API call fails, try to redirect
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.error("Failed to logout:", error);
+      // Still redirect even on error
+      window.location.href = "/";
+    }
+  };
+
+  return (
+    <div className="font-sans text-slate-900 antialiased selection:bg-pink-200 selection:text-pink-900">
+      <style>{styles}</style>
+      <AuthenticatedNavbar studentEmail={student.email} onLogout={handleLogout} loggingOut={loggingOut} />
+      <main>
+        <AuthenticatedHero student={student} />
+        <StatusSection student={student} />
+        <HowItWorks />
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+const App = () => {
+  const [signupCount, setSignupCount] = useState<number | null>(null);
+  const [authState, setAuthState] = useState<{ authenticated: boolean; student?: { id: string; email: string } } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAuthState = async () => {
+      try {
+        const response = await fetch("/api/session", { cache: "no-store" });
+        if (response.ok) {
+          const data = await response.json();
+          setAuthState(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch auth state:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAuthState();
   }, []);
 
   useEffect(() => {
@@ -291,275 +775,33 @@ export default function MutualsLanding() {
     fetchSignupCount();
   }, []);
 
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await fetch("/api/session");
-        if (response.ok) {
-          const data = await response.json();
-          if (data.authenticated && data.student) {
-            setIsSignedIn(true);
-            setUserEmail(data.student.email);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to check session:", error);
-      }
-    };
-    checkSession();
-  }, []);
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+      </div>
+    );
+  }
 
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/logout", { method: "POST" });
-      setIsSignedIn(false);
-      setUserEmail(null);
-    } catch (error) {
-      console.error("Failed to logout:", error);
-    }
-  };
+  // Show authenticated landing page if user is signed in
+  if (authState?.authenticated && authState.student) {
+    return <AuthenticatedApp student={authState.student} />;
+  }
 
+  // Show public landing page if user is not signed in
   return (
-    <div className="min-h-screen bg-[#f4f4fb] text-slate-900">
-      {/* NAV */}
-      <header className="border-b border-[#d3d3ec] bg-[#f4f4fb]/90 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-2">
-            {/* venn diagram logo */}
-            <div className="relative h-8 w-10">
-              <div className="absolute left-0 top-1 h-6 w-6 rounded-full bg-indigo-500/90" />
-              <div className="absolute right-0 top-1 h-6 w-6 rounded-full bg-pink-500/90 mix-blend-multiply" />
-            </div>
-            <span className="text-lg font-semibold tracking-tight">Mutuals</span>
-          </div>
-          <div className="flex items-center gap-3">
-            {isSignedIn ? (
-              <>
-                <Link
-                  href="/survey"
-                  className="rounded-full border border-slate-400/60 px-4 py-1.5 text-sm font-semibold text-slate-900 transition hover:border-slate-900 hover:text-slate-950"
-                >
-                  Survey
-                </Link>
-                <div className="flex items-center gap-2">
-                  <span className="hidden text-sm text-slate-600 sm:inline">
-                    {userEmail}
-                  </span>
-                  <button
-                    onClick={handleLogout}
-                    className="rounded-full bg-slate-950 px-4 py-1.5 text-sm font-semibold text-slate-50 shadow-md hover:bg-slate-900"
-                  >
-                    Sign out
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/signin"
-                  className="rounded-full border border-slate-400/60 px-4 py-1.5 text-sm font-semibold text-slate-900 transition hover:border-slate-900 hover:text-slate-950"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href="/signup"
-                  className="hidden rounded-full bg-slate-950 px-4 py-1.5 text-sm font-semibold text-slate-50 shadow-md hover:bg-slate-900 sm:inline-flex"
-                >
-                  Sign up
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-5xl px-4 pb-16">
-        {/* HERO */}
-        <section className="pt-8">
-          <div className="overflow-hidden rounded-[32px] bg-gradient-to-tr from-indigo-600 via-sky-500 to-pink-500 shadow-xl">
-            <div className="relative h-full w-full px-6 py-8 md:px-10 md:py-10">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(254,249,195,0.4),_transparent_55%),radial-gradient(circle_at_top,_rgba(248,250,252,0.15),_transparent_60%)] mix-blend-soft-light" />
-
-              <div className="relative max-w-xxl space-y-5 text-slate-50">
-                <h1 className="text-4xl font-semibold leading-tight md:text-5xl">
-                  Meet new people through Mutuals.
-                  <span className="block text-slate-100">No more BS matching apps.</span>
-                </h1>
-
-                <p className="max-w-lg text-sm leading-relaxed md:text-base">
-                  Once a week, Mutuals notifies you and your match to meet up. By signing up, you stay tuned for on campus events to do with your friend match, and get notified when we expand our survey for better matches. <br />
-                  <b>Join our endeavor to tighten the Stanford network. </b>
-                </p>
-
-                <div className="flex flex-wrap items-center gap-3 pt-1">
-                  {isSignedIn ? (
-                    <>
-                      <Link href="/survey" className="rounded-full bg-slate-950 px-6 py-2.5 text-sm font-semibold text-slate-50 shadow-md hover:bg-slate-900">
-                        Update your survey
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      <Link href="/signup" className="rounded-full bg-slate-950 px-6 py-2.5 text-sm font-semibold text-slate-50 shadow-md hover:bg-slate-900">
-                        {signupCount !== null
-                          ? `Join ${signupCount * 2 + 237} others in the network`
-                          : "Join our network"}
-                      </Link>
-                      <span className="text-xs text-slate-100/80">
-                        Friends don&apos;t have to start as complete strangers.
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* little “people” hint in corner */}
-              <div className="pointer-events-none absolute inset-x-6 bottom-4 flex justify-end md:inset-x-10">
-                <div className="flex gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-lg">
-                  👫
-                  </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-lg">
-                  🍻
-                  </div>
-                  <div className="hidden h-10 w-10 items-center justify-center rounded-full bg-white/70 text-lg md:flex">
-                  💬
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* HOW IT WORKS */}
-        <section className="mt-16 space-y-8">
-          <h2 className="text-center text-2xl font-semibold text-slate-900">How Mutuals works</h2>
-
-          {/* Card 1 – Your circles */}
-          <div className="grid gap-6 rounded-[28px] bg-[#e0edff] p-6 shadow-md md:grid-cols-2 md:items-center">
-            <div className="space-y-3">
-              <h3 className="text-xl font-semibold text-slate-900">Tell us about your circles</h3>
-              <p className="text-sm text-slate-800">
-                Your major, year, usual hangout spots, and several close friends. We use this to
-                understand your everyday routine — not to keep you in it, but to see where we can
-                gently stretch it.
-              </p>
-            </div>
-            <div className="rounded-2xl bg-white/95 p-4 shadow">
-              <p className="text-xs font-medium text-slate-500">Your campus orbit</p>
-              <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
-                <div className="rounded-xl border border-indigo-100 bg-indigo-50 p-2">
-                  <p className="font-semibold text-slate-900">Where you live</p>
-                  <p className="mt-1 text-[11px] text-slate-700">East campus · Wilbur</p>
-                </div>
-                <div className="rounded-xl border border-pink-100 bg-pink-50 p-2">
-                  <p className="font-semibold text-slate-900">Where you usually are</p>
-                  <p className="mt-1 text-[11px] text-slate-700">
-                    West campus · CoDa, On Call
-                  </p>
-                </div>
-              </div>
-
-              <p className="mt-3 text-xs font-medium text-slate-500">People in your core circle</p>
-              <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                {["John", "Girlfriend", "Pset buddies", "Dormmates"].map((name) => (
-                  <span
-                    key={name}
-                    className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-slate-800"
-                  >
-                    <span className="h-4 w-4 rounded-full bg-indigo-400" />
-                    {name}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Card 3 – Table with pairwise mutuals (second card removed per your request) */}
-          <div className="grid gap-6 rounded-[28px] bg-[#ffe2eb] p-6 shadow-md md:grid-cols-2 md:items-center">
-            <div className="space-y-3">
-              <h3 className="text-xl font-semibold text-slate-900">
-                We set up a small gang through Mutuals.
-              </h3>
-              <p className="text-sm text-slate-800">
-                Mutuals seats you with people connected by mutual friends — not necessarily similar, but all one degree away in
-                different directions.
-              </p>
-            </div>
-            <div className="rounded-2xl bg-white/95 p-4 shadow">
-              <p className="text-xs font-medium text-slate-500">This week&apos;s gang</p>
-
-              <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
-                {[
-                  { name: "You", via: "…" },
-                  { name: "Aanya", via: "via Jordan" },
-                  { name: "Leo", via: "via Jordan" },
-                  { name: "Miles", via: "via Maya" },
-                  { name: "Sara", via: "via Maya" },
-                  { name: "Noah", via: "via Maya" },
-                ].map((p) => (
-                  <div
-                    key={p.name + p.via}
-                    className="flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-2 py-2"
-                  >
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-pink-200 text-[11px] font-semibold text-pink-900">
-                      {p.name === "You" ? "YOU" : p.name[0]}
-                    </div>
-                    <div>
-                      <p className="text-[11px] font-semibold text-slate-900">{p.name}</p>
-                      {p.via !== "…" && (
-                        <p className="text-[10px] text-slate-600">{p.via}</p>
-                      )}
-                      {p.via === "…" && (
-                        <p className="text-[10px] text-slate-600">You</p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* NETWORK SECTION (renamed from "Under the hood") */}
-        <section className="mt-20 border-t border-[#d3d3ec] pt-10">
-          <h2 className="text-center text-2xl font-semibold text-slate-900">
-            How Mutuals connects you
-          </h2>
-
-          <div className="mt-10 grid gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)] md:items-start">
-            {/* sticky network visual */}
-            <div className="md:sticky md:top-24">
-              <NetworkViz stage={stage} />
-            </div>
-
-            {/* scroll blocks that advance the network */}
-            <div className="space-y-8">
-              {NETWORK_STORY.map((block, idx) => (
-                <article
-                  key={block.id}
-                  ref={(el) => {
-                    sectionRefs.current[idx] = el;
-                  }}
-                  data-network-index={idx}
-                  className={`rounded-2xl border px-4 py-4 text-sm leading-relaxed md:px-5 md:py-5 ${
-                    stage === block.stage
-                      ? "border-indigo-400 bg-white shadow-md"
-                      : "border-[#d3d3ec] bg-[#f7f5ff]"
-                  }`}
-                >
-                  <h3 className="text-base font-semibold text-slate-900">{block.title}</h3>
-                  <p className="mt-2 text-slate-700">{block.body}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
+    <div className="font-sans text-slate-900 antialiased selection:bg-pink-200 selection:text-pink-900">
+      <style>{styles}</style>
+      <Navbar />
+      <main>
+        <Hero signupCount={signupCount} />
+        <VibeCheck />
+        <HowItWorks />
+        <CTA signupCount={signupCount} />
       </main>
-
-      <footer className="border-t border-[#d3d3ec] py-6 text-center text-xs text-slate-500">
-        © {new Date().getFullYear()} Mutuals
-      </footer>
+      <Footer />
     </div>
   );
-}
+};
+
+export default App;

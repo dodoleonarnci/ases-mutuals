@@ -3,8 +3,42 @@
 import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { FileText, User, GraduationCap, Users, Home, ArrowLeft, Sparkles, CheckCircle } from "lucide-react";
 
 import { isValidStudentIdentifier, deriveStudentIdentifier } from "@/lib/identifiers";
+
+const styles = `
+  @keyframes blob {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(0px, 0px) scale(1); }
+  }
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+`;
+
+const Logo = ({ className = "" }) => (
+  <div className={`flex items-center gap-2 ${className}`}>
+    <div className="relative w-10 h-10 flex-shrink-0">
+      <div className="absolute left-0 top-0 w-7 h-7 rounded-full bg-[#6366f1] mix-blend-multiply opacity-90"></div>
+      <div className="absolute right-0 bottom-0 w-7 h-7 rounded-full bg-[#ec4899] mix-blend-multiply opacity-90"></div>
+    </div>
+    <span className="text-2xl font-black tracking-tight text-slate-900 font-sans">Mutuals</span>
+  </div>
+);
 
 interface StudentData {
   first_name: string;
@@ -578,232 +612,284 @@ function SurveyPageContent() {
 
   if (!studentId) {
     return (
-      <main className="min-h-screen bg-[#f4f4fb] px-6 py-16 text-slate-900">
-        <div className="mx-auto max-w-xl rounded-3xl border border-amber-200 bg-amber-50 p-8 text-center">
-          <p className="text-lg font-semibold text-amber-900">
-            We need a signup link to load your survey.
-          </p>
-          <Link
-            href="/signup"
-            className="mt-6 inline-flex items-center justify-center rounded-2xl bg-slate-950 px-6 py-3 text-sm font-semibold text-slate-50 transition hover:bg-slate-900"
-          >
-            Go to signup
-          </Link>
-        </div>
-      </main>
+      <div className="min-h-screen bg-white font-sans text-slate-900 antialiased">
+        <style>{styles}</style>
+        <main className="min-h-screen flex items-center justify-center px-6 py-16">
+          <div className="relative group max-w-xl w-full">
+            <div className="absolute inset-0 bg-amber-400 rounded-3xl transform translate-x-2 translate-y-2 border-2 border-slate-900"></div>
+            <div className="relative bg-white border-2 border-slate-900 rounded-3xl p-8 text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <p className="text-xl font-black text-amber-900 mb-6">
+                We need a signup link to load your survey.
+              </p>
+              <Link
+                href="/signup"
+                className="inline-flex items-center justify-center rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-3 transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+              >
+                Go to signup
+              </Link>
+            </div>
+          </div>
+        </main>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#f4f4fb] px-6 py-16 text-slate-900">
-      <div className="mx-auto flex max-w-3xl flex-col gap-8">
-        <div>
-          <Link
-            href="/"
-            className="text-sm font-semibold text-indigo-600 transition hover:text-indigo-500"
-          >
-            ← Back to landing page
-          </Link>
-          <h1 className="mt-4 text-4xl font-bold tracking-tight text-slate-950">
-            Tell us about yourself
-          </h1>
-          <p className="mt-3 text-base text-slate-600">
-            Drop your homies. Literally takes one minute.
-          </p>``
-          {email && (
-            <p className="mt-2 text-sm text-slate-500">
-              Logged in as <span className="font-semibold text-slate-700">{email}</span>
-            </p>
-          )}
-        </div>
-
-        <form
-          onSubmit={handleSubmit}
-          className="rounded-3xl border border-[#d3d3ec] bg-white p-6 shadow-sm sm:p-8"
-        >
-          <div className="grid gap-6 sm:grid-cols-2">
-            <label className="text-sm font-medium text-slate-800">
-              First name
-              <input
-                type="text"
-                value={firstName}
-                onChange={(event) => setFirstName(event.target.value)}
-                required
-                placeholder="Enter your first name"
-                className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-              />
-            </label>
-
-            <label className="text-sm font-medium text-slate-800">
-              Last name
-              <input
-                type="text"
-                value={lastName}
-                onChange={(event) => setLastName(event.target.value)}
-                required
-                placeholder="Enter your last name"
-                className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-              />
-            </label>
-          </div>
-
-          <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            <label className="text-sm font-medium text-slate-800">
-              Class year
-              <select
-                value={gradYear}
-                onChange={(event) => setGradYear(event.target.value)}
-                required
-                className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-              >
-                <option value="">Select year</option>
-                {CLASS_YEARS.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="text-sm font-medium text-slate-800">
-              Sex
-              <select
-                value={sex}
-                onChange={(event) => setSex(event.target.value)}
-                required
-                className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-              >
-                <option value="">Select option</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="non-binary">Non-binary</option>
-              </select>
-            </label>
-          </div>
-
-          <div className="mt-6">
-            <label className="text-sm font-medium text-slate-800">
-              Dorm
-              <select
-                value={dorm}
-                onChange={(event) => setDorm(event.target.value)}
-                required
-                className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-              >
-                <option value="">Select dorm</option>
-                {DORM_OPTIONS.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          <div className="mt-8">
-            <p className="text-sm font-medium text-slate-800">Name your close friends</p>
-            <p className="text-xs text-slate-500">
-              Start typing to see suggestions. Only Stanford undergraduates from the directory can be added.
-            </p>
-
-            <div className="relative mt-3">
-              <input
-                type="text"
-                value={friendInput}
-                onChange={(event) => setFriendInput(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    if (friendSuggestions.length > 0) {
-                      handleFriendAdd(friendSuggestions[0].name);
-                    } else if (friendInput.trim()) {
-                      handleFriendAdd(friendInput);
-                    }
-                  }
-                }}
-                placeholder="Add a friend"
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-              />
-
-              {friendSuggestions.length > 0 && (
-                <ul className="absolute z-10 mt-2 w-full max-h-64 overflow-y-auto rounded-2xl border border-slate-200 bg-white text-sm shadow-lg">
-                  {friendSuggestions.map((student) => (
-                    <li key={`${student.name}-${student.email}`}>
-                      <button
-                        type="button"
-                        onClick={() => handleFriendAdd(student.name)}
-                        className="flex w-full flex-col items-start px-4 py-2.5 text-left text-slate-700 transition hover:bg-indigo-50"
-                      >
-                        <span className="font-medium">{student.name}</span>
-                        <span className="text-xs text-slate-500">{student.email}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <p className="mt-2 text-xs text-slate-500">
-              Added {closeFriends.length} friends (minimum {MIN_FRIENDS}).
-            </p>
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              {closeFriends.map((emailIdentifier) => {
-                // Display name without middle name if available, otherwise show email identifier
-                const fullName = emailToNameMap.get(emailIdentifier);
-                const displayName = fullName ? getFirstLastName(fullName) : emailIdentifier;
-                return (
-                  <span
-                    key={emailIdentifier}
-                    className="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1 text-sm text-indigo-800"
-                  >
-                    {displayName}
-                    <button
-                      type="button"
-                      onClick={() => handleFriendRemove(emailIdentifier)}
-                      className="text-xs text-indigo-600"
-                      aria-label={`Remove ${displayName}`}
-                    >
-                      ✕
-                    </button>
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="mt-8">
-            <label className="text-sm font-medium text-slate-800">
-              Would you rather have no friends or go to UC Berkeley?
-              <select
-                value={ucBerkeleyChoice}
-                onChange={(event) => setUcBerkeleyChoice(event.target.value)}
-                required
-                className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-              >
-                <option value="">Select an option</option>
-                <option value="no_friends">No friends</option>
-                <option value="uc_berkeley">Go to UC Berkeley</option>
-              </select>
-            </label>
-          </div>
-
-          {error && (
-            <p className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              {error}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={isSubmitDisabled}
-            className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-slate-950 px-4 py-3 text-sm font-semibold text-slate-50 transition hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {status === "loading" ? "Saving your survey..." : "Submit survey"}
-          </button>
-        </form>
+    <div className="min-h-screen bg-white font-sans text-slate-900 antialiased">
+      <style>{styles}</style>
+      
+      {/* Decorative Background Elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+        <div className="absolute top-40 right-10 w-32 h-32 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-20 left-1/2 w-48 h-48 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
       </div>
-    </main>
+
+      <main className="relative min-h-screen px-6 py-16">
+        <div className="mx-auto max-w-4xl">
+          <div className="mb-8">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors mb-6 group"
+            >
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              Back to landing page
+            </Link>
+            <Logo className="mb-6" />
+            <h1 className="text-5xl font-black tracking-tight text-slate-900 mb-4">
+              Tell us about yourself
+            </h1>
+            <p className="text-lg text-slate-600 font-medium mb-2">
+              Drop your homies. Literally takes one minute.
+            </p>
+            {email && (
+              <p className="text-sm text-slate-500 font-medium">
+                Logged in as <span className="font-bold text-slate-700">{email}</span>
+              </p>
+            )}
+          </div>
+
+          <form
+            onSubmit={handleSubmit}
+            className="relative group"
+          >
+            <div className="absolute inset-0 bg-purple-400 rounded-3xl transform translate-x-2 translate-y-2 transition-transform group-hover:translate-x-4 group-hover:translate-y-4 border-2 border-slate-900"></div>
+            <div className="relative bg-white border-2 border-slate-900 rounded-3xl p-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] space-y-6">
+              <div className="grid gap-6 sm:grid-cols-2">
+                <label className="block">
+                  <div className="flex items-center gap-2 mb-2">
+                    <User className="w-4 h-4 text-slate-600" />
+                    <span className="text-sm font-bold text-slate-900">First name</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={(event) => setFirstName(event.target.value)}
+                    required
+                    placeholder="Enter your first name"
+                    className="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base text-slate-900 font-medium focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-colors"
+                  />
+                </label>
+
+                <label className="block">
+                  <div className="flex items-center gap-2 mb-2">
+                    <User className="w-4 h-4 text-slate-600" />
+                    <span className="text-sm font-bold text-slate-900">Last name</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                    required
+                    placeholder="Enter your last name"
+                    className="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base text-slate-900 font-medium focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-colors"
+                  />
+                </label>
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-2">
+                <label className="block">
+                  <div className="flex items-center gap-2 mb-2">
+                    <GraduationCap className="w-4 h-4 text-slate-600" />
+                    <span className="text-sm font-bold text-slate-900">Class year</span>
+                  </div>
+                  <select
+                    value={gradYear}
+                    onChange={(event) => setGradYear(event.target.value)}
+                    required
+                    className="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base text-slate-900 font-medium focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-colors"
+                  >
+                    <option value="">Select year</option>
+                    {CLASS_YEARS.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="block">
+                  <div className="flex items-center gap-2 mb-2">
+                    <User className="w-4 h-4 text-slate-600" />
+                    <span className="text-sm font-bold text-slate-900">Sex</span>
+                  </div>
+                  <select
+                    value={sex}
+                    onChange={(event) => setSex(event.target.value)}
+                    required
+                    className="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base text-slate-900 font-medium focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-colors"
+                  >
+                    <option value="">Select option</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="non-binary">Non-binary</option>
+                  </select>
+                </label>
+              </div>
+
+              <div>
+                <label className="block">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Home className="w-4 h-4 text-slate-600" />
+                    <span className="text-sm font-bold text-slate-900">Dorm</span>
+                  </div>
+                  <select
+                    value={dorm}
+                    onChange={(event) => setDorm(event.target.value)}
+                    required
+                    className="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base text-slate-900 font-medium focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-colors"
+                  >
+                    <option value="">Select dorm</option>
+                    {DORM_OPTIONS.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="w-4 h-4 text-slate-600" />
+                  <p className="text-sm font-bold text-slate-900">Name your close friends</p>
+                </div>
+                <p className="text-xs text-slate-500 font-medium mb-3">
+                  Start typing to see suggestions. Only Stanford undergraduates from the directory can be added.
+                </p>
+
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={friendInput}
+                    onChange={(event) => setFriendInput(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        event.preventDefault();
+                        if (friendSuggestions.length > 0) {
+                          handleFriendAdd(friendSuggestions[0].name);
+                        } else if (friendInput.trim()) {
+                          handleFriendAdd(friendInput);
+                        }
+                      }
+                    }}
+                    placeholder="Add a friend"
+                    className="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base text-slate-900 font-medium focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-colors"
+                  />
+
+                  {friendSuggestions.length > 0 && (
+                    <ul className="absolute z-10 mt-2 w-full max-h-64 overflow-y-auto rounded-2xl border-2 border-slate-900 bg-white text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                      {friendSuggestions.map((student) => (
+                        <li key={`${student.name}-${student.email}`}>
+                          <button
+                            type="button"
+                            onClick={() => handleFriendAdd(student.name)}
+                            className="flex w-full flex-col items-start px-4 py-2.5 text-left text-slate-700 transition hover:bg-indigo-50 font-medium"
+                          >
+                            <span className="font-bold">{student.name}</span>
+                            <span className="text-xs text-slate-500">{student.email}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                <p className="mt-3 text-xs text-slate-500 font-bold">
+                  Added {closeFriends.length} friends (minimum {MIN_FRIENDS}).
+                </p>
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {closeFriends.map((emailIdentifier) => {
+                    // Display name without middle name if available, otherwise show email identifier
+                    const fullName = emailToNameMap.get(emailIdentifier);
+                    const displayName = fullName ? getFirstLastName(fullName) : emailIdentifier;
+                    return (
+                      <span
+                        key={emailIdentifier}
+                        className="inline-flex items-center gap-2 rounded-full bg-indigo-100 border-2 border-indigo-300 px-3 py-1.5 text-sm font-bold text-indigo-800"
+                      >
+                        {displayName}
+                        <button
+                          type="button"
+                          onClick={() => handleFriendRemove(emailIdentifier)}
+                          className="text-xs text-indigo-600 hover:text-indigo-800 font-bold"
+                          aria-label={`Remove ${displayName}`}
+                        >
+                          ✕
+                        </button>
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <label className="block">
+                  <span className="text-sm font-bold text-slate-900 mb-2 block">
+                    Would you rather have no friends or go to UC Berkeley?
+                  </span>
+                  <select
+                    value={ucBerkeleyChoice}
+                    onChange={(event) => setUcBerkeleyChoice(event.target.value)}
+                    required
+                    className="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base text-slate-900 font-medium focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-colors"
+                  >
+                    <option value="">Select an option</option>
+                    <option value="no_friends">No friends</option>
+                    <option value="uc_berkeley">Go to UC Berkeley</option>
+                  </select>
+                </label>
+              </div>
+
+              {error && (
+                <div className="rounded-2xl border-2 border-red-300 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSubmitDisabled}
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
+              >
+                {status === "loading" ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Saving your survey...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-5 h-5" />
+                    Submit survey
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
   );
 }
 
@@ -811,13 +897,17 @@ export default function SurveyPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-[#f4f4fb] px-6 py-16 text-slate-900">
-          <div className="mx-auto max-w-3xl">
-            <div className="rounded-3xl border border-[#d3d3ec] bg-white p-8 text-center">
-              <p className="text-base text-slate-600">Loading survey...</p>
+        <div className="min-h-screen bg-white font-sans text-slate-900 antialiased">
+          <style>{styles}</style>
+          <main className="min-h-screen flex items-center justify-center px-6 py-16">
+            <div className="relative group max-w-xl w-full">
+              <div className="absolute inset-0 bg-indigo-400 rounded-3xl transform translate-x-2 translate-y-2 border-2 border-slate-900"></div>
+              <div className="relative bg-white border-2 border-slate-900 rounded-3xl p-8 text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <p className="text-lg font-black text-slate-900">Loading survey...</p>
+              </div>
             </div>
-          </div>
-        </main>
+          </main>
+        </div>
       }
     >
       <SurveyPageContent />
