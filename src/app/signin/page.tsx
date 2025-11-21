@@ -113,8 +113,8 @@ export default function SignInPage() {
         <div className="absolute bottom-20 left-1/2 w-48 h-48 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
       </div>
 
-      <main className="relative min-h-screen flex items-center justify-center px-6 py-16">
-        <div className="mx-auto flex max-w-2xl w-full gap-12 items-center">
+      <main className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 py-12 sm:py-16">
+        <div className="mx-auto flex max-w-2xl w-full gap-6 lg:gap-12 items-center">
           {/* Left side - Illustration */}
           <div className="hidden lg:flex flex-1 items-center justify-center">
             <div className="relative">
@@ -153,10 +153,10 @@ export default function SignInPage() {
 
             <div className="mb-8">
               <Logo className="mb-6" />
-              <h1 className="text-5xl font-black tracking-tight text-slate-900 mb-4">
+              <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 mb-4">
                 Welcome back
               </h1>
-              <p className="text-lg text-slate-600 font-medium">
+              <p className="text-base sm:text-lg text-slate-600 font-medium">
                 Sign in with the email and password you used for Mutuals signup. Need an account?{" "}
                 <Link href="/signup" className="text-indigo-600 font-bold underline hover:text-indigo-700">
                   Sign up here

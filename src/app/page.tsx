@@ -209,16 +209,16 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b-2 border-slate-100">
       <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
         <Logo href="/" />
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <Link 
             href="/signin"
-            className="hidden md:block text-slate-600 font-bold hover:text-indigo-600 transition-colors"
+            className="text-slate-600 font-bold hover:text-indigo-600 transition-colors text-sm md:text-base"
           >
             Sign in
           </Link>
           <Link 
             href="/signup"
-            className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-6 rounded-full transition-transform hover:scale-105 active:scale-95 shadow-[3px_3px_0px_0px_#6366f1]"
+            className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-4 md:px-6 rounded-full transition-transform hover:scale-105 active:scale-95 shadow-[3px_3px_0px_0px_#6366f1] text-sm md:text-base"
           >
             Sign up
           </Link>
@@ -251,26 +251,29 @@ const Hero = ({ signupCount }: { signupCount: number | null }) => {
           </span>
         </h1>
         
-        <p className="text-xl md:text-2xl text-slate-600 mb-10 max-w-3xl mx-auto font-medium leading-relaxed">
+        <p className="text-lg sm:text-xl md:text-2xl text-slate-600 mb-8 sm:mb-10 max-w-3xl mx-auto font-medium leading-relaxed px-4">
           Every week, we'll seat you at a dinner table with <span className="text-indigo-600 font-black decoration-indigo-300 decoration-4 underline-offset-4 underline">new</span> people, but everyone shares a <span className="text-pink-600 font-black decoration-pink-300 decoration-4 underline-offset-4 underline">mutual friend</span>.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center relative z-20">
           <Link 
             href="/signup"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold py-4 px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2 group"
+            className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white text-base sm:text-lg font-bold py-4 px-6 sm:px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center gap-2 group"
           >
             <Users className="w-5 h-5 group-hover:scale-110 transition-transform" />
             {signupCount !== null
               ? `Join network of ${signupCount * 3 + 267} students`
               : "Join our network"}
           </Link>
-          <Link 
-            href="/signin"
-            className="bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 text-lg font-bold py-4 px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#e2e8f0] flex items-center gap-2"
+          <button 
+            onClick={() => {
+              const element = document.getElementById('how-it-works');
+              element?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 text-base sm:text-lg font-bold py-4 px-6 sm:px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#e2e8f0] flex items-center justify-center gap-2"
           >
             How it works <ArrowRight className="w-5 h-5" />
-          </Link>
+          </button>
         </div>
       </div>
     </header>
@@ -296,7 +299,7 @@ const StepCard = ({ icon: Icon, title, desc, color, number }: {icon: any, title:
 
 const HowItWorks = () => {
   return (
-    <section className="pb-24 pt-12 bg-white relative overflow-hidden">
+    <section className="pb-16 sm:pb-24 pt-12 bg-white relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-4">
         <div className="grid md:grid-cols-3 gap-8 md:gap-12">
           <FadeInSection delay={100}>
@@ -334,13 +337,13 @@ const HowItWorks = () => {
 
 const VibeCheck = () => {
   return (
-    <section id="how-it-works" className="py-24 bg-slate-900 text-white relative overflow-hidden">
+    <section id="how-it-works" className="py-16 sm:py-24 bg-slate-900 text-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#6366f1 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
 
       <div className="max-w-6xl mx-auto px-4 relative z-10">
-        <FadeInSection className="text-center mb-20">
-          <h2 className="text-4xl md:text-6xl font-black text-white mb-6">The Mutuals Algorithm™</h2>
+        <FadeInSection className="text-center mb-12 sm:mb-20">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-white mb-6">The Mutuals Algorithm™</h2>
         </FadeInSection>
 
         <div className="grid md:grid-cols-2 gap-16 items-center">
@@ -439,7 +442,7 @@ const CTA = ({ signupCount }: { signupCount: number | null }) => (
         </p>
         <Link 
           href="/signup"
-          className="w-full sm:w-auto bg-white text-indigo-600 hover:text-indigo-700 text-xl font-bold py-6 px-12 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,0.2)] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] flex items-center justify-center gap-3 mx-auto group border-b-4 border-slate-200"
+          className="w-full sm:w-auto bg-white text-indigo-600 hover:text-indigo-700 text-lg sm:text-xl font-bold py-5 sm:py-6 px-8 sm:px-12 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,0.2)] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] flex items-center justify-center gap-3 mx-auto group border-b-4 border-slate-200"
         >
           <Sparkles className="w-6 h-6 group-hover:rotate-12 transition-transform text-pink-500" />
           <span>Sign Up for This Week</span>
@@ -469,15 +472,15 @@ const AuthenticatedNavbar = ({ studentEmail, onLogout, loggingOut }: { studentEm
     <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b-2 border-slate-100">
       <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
         <Logo href="/" />
-        <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-2 text-slate-600 font-medium">
+          <div className="flex items-center gap-2 md:gap-4">
+          <div className="hidden lg:flex items-center gap-2 text-slate-600 font-medium">
             <User className="w-4 h-4" />
-            <span className="text-sm">{studentEmail}</span>
+            <span className="text-sm truncate max-w-[150px]">{studentEmail}</span>
           </div>
           <button
             onClick={onLogout}
             disabled={loggingOut}
-            className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-6 rounded-full transition-transform hover:scale-105 active:scale-95 shadow-[3px_3px_0px_0px_#6366f1] flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+            className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-4 md:px-6 rounded-full transition-transform hover:scale-105 active:scale-95 shadow-[3px_3px_0px_0px_#6366f1] flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100 text-sm md:text-base"
           >
             {loggingOut ? (
               <>
@@ -540,7 +543,7 @@ const AuthenticatedHero = ({ student }: { student: { id: string; email: string }
           Hey <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">{firstName}</span>,
         </h1>
         
-        <p className="text-xl md:text-2xl text-slate-600 mb-10 max-w-3xl mx-auto font-medium leading-relaxed">
+        <p className="text-lg sm:text-xl md:text-2xl text-slate-600 mb-8 sm:mb-10 max-w-3xl mx-auto font-medium leading-relaxed px-4">
           Ready to make some <span className="text-indigo-600 font-black decoration-indigo-300 decoration-4 underline-offset-4 underline">mutual connections</span>?
         </p>
 
@@ -554,14 +557,14 @@ const AuthenticatedHero = ({ student }: { student: { id: string; email: string }
               <>
                 <Link 
                   href="/survey"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold py-4 px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2 group"
+                  className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white text-base sm:text-lg font-bold py-4 px-6 sm:px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center gap-2 group"
                 >
                   <FileText className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   Complete Your Survey
                 </Link>
                 <Link 
                   href="/whats-next"
-                  className="bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 text-lg font-bold py-4 px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#e2e8f0] flex items-center gap-2"
+                  className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 text-base sm:text-lg font-bold py-4 px-6 sm:px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#e2e8f0] flex items-center justify-center gap-2"
                 >
                   Learn More <ArrowRight className="w-5 h-5" />
                 </Link>
@@ -570,14 +573,14 @@ const AuthenticatedHero = ({ student }: { student: { id: string; email: string }
               <>
                 <Link 
                   href="/whats-next"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold py-4 px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2 group"
+                  className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white text-base sm:text-lg font-bold py-4 px-6 sm:px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center gap-2 group"
                 >
                   <Calendar className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   What&apos;s Next?
                 </Link>
                 <Link 
                   href="/survey"
-                  className="bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 text-lg font-bold py-4 px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#e2e8f0] flex items-center gap-2"
+                  className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 text-base sm:text-lg font-bold py-4 px-6 sm:px-8 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#e2e8f0] flex items-center justify-center gap-2"
                 >
                   Update Survey <ArrowRight className="w-5 h-5" />
                 </Link>
@@ -658,7 +661,7 @@ const StatusSection = ({ student }: { student: { id: string; email: string } }) 
 
   if (loading) {
     return (
-      <section className="py-24 bg-white relative overflow-hidden">
+      <section className="py-16 sm:py-24 bg-white relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex justify-center items-center py-12">
             <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
@@ -671,10 +674,10 @@ const StatusSection = ({ student }: { student: { id: string; email: string } }) 
   const surveyCompleted = studentData?.survey_completed || false;
 
   return (
-    <section className="py-24 bg-white relative overflow-hidden">
+    <section className="py-16 sm:py-24 bg-white relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-4">
-        <FadeInSection className="text-center mb-12">
-          <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-4">Your Status</h2>
+        <FadeInSection className="text-center mb-8 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-slate-900 mb-4">Your Status</h2>
         </FadeInSection>
 
         <div className="grid md:grid-cols-2 gap-8 md:gap-12">
