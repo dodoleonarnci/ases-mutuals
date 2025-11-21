@@ -98,6 +98,10 @@ export default function SignUpPage() {
       }
 
       if (!response.ok) {
+        // Handle 409 Conflict (email already exists)
+        if (response.status === 409) {
+          throw new Error(responsePayload.error ?? "An account with this email already exists. Please sign in instead.");
+        }
         throw new Error(responsePayload.error ?? "Unable to save signup");
       }
 
@@ -145,7 +149,6 @@ export default function SignUpPage() {
                   </div>
                   <div className="text-center space-y-2">
                     <h3 className="text-2xl font-black text-slate-900">Join the network!</h3>
-                    <p className="text-slate-600 font-medium">Let's get you started</p>
                   </div>
                   <div className="flex gap-2 mt-4">
                     <div className="w-12 h-12 rounded-full bg-pink-100 border-2 border-pink-300 flex items-center justify-center">
@@ -267,7 +270,17 @@ export default function SignUpPage() {
                       ? "border-indigo-300 bg-indigo-50 text-indigo-700" 
                       : "border-red-300 bg-red-50 text-red-700"
                   }`}>
-                    {message}
+                    <div className="space-y-2">
+                      <div>{message}</div>
+                      {status === "error" && message.includes("already exists") && (
+                        <Link 
+                          href="/signin"
+                          className="inline-block mt-2 text-red-600 hover:text-red-700 underline font-bold"
+                        >
+                          Go to sign in →
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 )}
 

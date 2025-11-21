@@ -61,9 +61,30 @@ export async function POST(request: Request) {
 
     const client = createServiceRoleClient();
 
-    await client.from("signups").upsert(normalized, {
-      onConflict: "email",
-    });
+    // Check if signup already exists with this email
+    const { data: existingSignup, error: signupCheckError } = await client
+      .from("signups")
+      .select("email")
+      .eq("email", normalized.email)
+      .maybeSingle();
+
+    if (signupCheckError && signupCheckError.code !== "PGRST116") {
+      return NextResponse.json({ error: signupCheckError.message }, { status: 500 });
+    }
+
+    if (existingSignup) {
+      return NextResponse.json(
+        { error: "An account with this email already exists. Please sign in instead." },
+        { status: 409 },
+      );
+    }
+
+    // Insert new signup
+    const { error: insertError } = await client.from("signups").insert(normalized);
+
+    if (insertError) {
+      return NextResponse.json({ error: insertError.message }, { status: 500 });
+    }
 
     const { data: existingStudent, error: existingError } = await client
       .from("students")
