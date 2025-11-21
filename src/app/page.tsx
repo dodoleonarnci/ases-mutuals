@@ -228,7 +228,18 @@ const Navbar = () => {
   );
 };
 
+// Calculate number of 30-minute intervals since Nov 20, 2025 9PM PST
+const calculateIntervals = () => {
+  // Nov 20, 2025 9:00 PM PST = Nov 21, 2025 5:00 AM UTC (PST is UTC-8)
+  const startDate = new Date('2025-11-21T05:00:00Z');
+  const now = new Date();
+  const elapsedMs = now.getTime() - startDate.getTime();
+  const elapsedMinutes = elapsedMs / (1000 * 60);
+  return Math.floor(elapsedMinutes / 30);
+};
+
 const Hero = ({ signupCount }: { signupCount: number | null }) => {
+  const intervals = calculateIntervals();
   return (
     <header className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       <ConnectionCanvas />
@@ -262,7 +273,7 @@ const Hero = ({ signupCount }: { signupCount: number | null }) => {
           >
             <Users className="w-5 h-5 group-hover:scale-110 transition-transform" />
             {signupCount !== null
-              ? `Join network of ${signupCount * 3 + 267} students`
+              ? `Join network of ${signupCount * 3 + 267 + 7 * intervals} students`
               : "Join our network"}
           </Link>
           <button 
@@ -420,7 +431,9 @@ const VibeCheck = () => {
   );
 };
 
-const CTA = ({ signupCount }: { signupCount: number | null }) => (
+const CTA = ({ signupCount }: { signupCount: number | null }) => {
+  const intervals = calculateIntervals();
+  return (
   <section className="py-16 md:py-24 bg-[#6366f1] relative overflow-hidden">
     <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20">
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-blob"></div>
@@ -437,7 +450,7 @@ const CTA = ({ signupCount }: { signupCount: number | null }) => (
         </h2>
         <p className="text-indigo-100 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-medium">
           {signupCount !== null
-            ? `Join network of ${signupCount * 3 + 267} students discovering their campus community, one dinner at a time.`
+            ? `Join network of ${signupCount * 3 + 267 + 7 * intervals} students discovering their campus community, one dinner at a time.`
             : "Join Stanford students discovering their campus community, one dinner at a time."}
         </p>
         <Link 
@@ -450,7 +463,8 @@ const CTA = ({ signupCount }: { signupCount: number | null }) => (
       </FadeInSection>
     </div>
   </section>
-);
+  );
+};
 
 const Footer = () => (
   <footer className="bg-white border-t-2 border-slate-100 py-12">
@@ -775,7 +789,17 @@ const App = () => {
         console.error("Failed to fetch signup count:", error);
       }
     };
+
     fetchSignupCount();
+
+    // Update count every minute
+    const updateInterval = setInterval(() => {
+      fetchSignupCount();
+    }, 60 * 1000);
+
+    return () => {
+      clearInterval(updateInterval);
+    };
   }, []);
 
   if (loading) {

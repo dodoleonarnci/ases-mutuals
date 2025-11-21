@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "save-mutual-friends": "tsx scripts/saveMutualFriends.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.81.1",
@@ -27,6 +28,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
     "tailwindcss": "^4",
+    "dotenv": "^16.4.5",
+    "tsx": "^4.7.0",
     "typescript": "^5"
   }
 }

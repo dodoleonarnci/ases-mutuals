@@ -490,7 +490,7 @@ function SurveyPageContent() {
     });
 
     if (!student) {
-      setError("This person is not in the Stanford undergraduate directory. Please only add close friends who are Stanford undergraduates.");
+      setError("This person is not in the Stanford undergraduate directory. Please only add friends who are Stanford undergraduates.");
       setFriendInput("");
       return;
     }
@@ -547,7 +547,7 @@ function SurveyPageContent() {
     }
 
     if (closeFriends.length < MIN_FRIENDS) {
-      setError(`Please add at least ${MIN_FRIENDS} close friends.`);
+      setError(`Please add at least ${MIN_FRIENDS} students.`);
       return;
     }
 
@@ -772,7 +772,7 @@ function SurveyPageContent() {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Users className="w-4 h-4 text-slate-600" />
-                  <p className="text-sm font-bold text-slate-900">Name your close friends</p>
+                  <p className="text-sm font-bold text-slate-900">Name Stanford students that you know</p>
                 </div>
                 <p className="text-xs text-slate-500 font-medium mb-3">
                   Start typing to see suggestions. Only Stanford undergraduates from the directory can be added.
