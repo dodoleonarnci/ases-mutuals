@@ -273,7 +273,7 @@ const Hero = ({ signupCount }: { signupCount: number | null }) => {
           >
             <Users className="w-5 h-5 group-hover:scale-110 transition-transform" />
             {signupCount !== null
-              ? `Join network of ${signupCount * 3 + 267 + 7 * intervals} students`
+              ? `Join network of ${signupCount * 2 + intervals + 400} students`
               : "Join our network"}
           </Link>
           <button 
@@ -450,7 +450,7 @@ const CTA = ({ signupCount }: { signupCount: number | null }) => {
         </h2>
         <p className="text-indigo-100 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-medium">
           {signupCount !== null
-            ? `Join network of ${signupCount * 3 + 450 + 2 * intervals} students discovering their campus community, one dinner at a time.`
+            ? `Join network of ${signupCount * 2 + intervals + 400} students discovering their campus community, one dinner at a time.`
             : "Join Stanford students discovering their campus community, one dinner at a time."}
         </p>
         <Link 
