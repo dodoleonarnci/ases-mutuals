@@ -26,9 +26,6 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const authError = validateApiKey(request);
-  if (authError) return authError;
-
   try {
     const parseResult = await parseJsonRequest(request);
     if (parseResult.error) {
