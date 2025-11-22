@@ -6,8 +6,24 @@ import { formatZodError, signinSchema } from "@/lib/validators";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { setSession } from "@/lib/session";
 
-export async function POST(request: Request) {
+/**
+ * Public endpoint - no API key required.
+ * Allows users to sign in with their email and password.
+ */
 
+// Handle CORS preflight requests
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
+}
+
+export async function POST(request: Request) {
   try {
     const parseResult = await parseJsonRequest(request);
     if (parseResult.error) {

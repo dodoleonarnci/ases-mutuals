@@ -80,10 +80,11 @@ export function validateApiKey(request: Request): NextResponse | null {
   const validApiKey = env.API_KEY;
 
   if (!validApiKey) {
-    console.error("API_KEY environment variable is not configured");
+    // If API_KEY is not configured, allow the request (for public endpoints)
+    // Protected endpoints should not call validateApiKey if API_KEY is optional
     return NextResponse.json(
-      { error: "Server configuration error" },
-      { status: 500 }
+      { error: "API key validation is not configured. This endpoint requires API key authentication." },
+      { status: 401 }
     );
   }
 

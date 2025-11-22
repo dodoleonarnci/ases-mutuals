@@ -6,7 +6,7 @@ const envSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
-  API_KEY: z.string().min(1),
+  API_KEY: z.string().min(1).optional(),
   NEXT_PUBLIC_API_KEY: z.string().min(1).optional(),
 });
 
