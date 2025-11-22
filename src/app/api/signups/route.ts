@@ -7,8 +7,12 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 import { formatZodError, signupInsertSchema } from "@/lib/validators";
 import { getStudentNamesFromCSV } from "@/lib/studentData";
 import { setSession } from "@/lib/session";
+import { validateApiKey } from "@/lib/api-auth";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authError = validateApiKey(request);
+  if (authError) return authError;
+
   const { data, error } = await createServiceRoleClient()
     .from("signups")
     .select("*")
@@ -22,6 +26,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const authError = validateApiKey(request);
+  if (authError) return authError;
+
   try {
     const parseResult = await parseJsonRequest(request);
     if (parseResult.error) {

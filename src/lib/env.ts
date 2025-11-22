@@ -6,6 +6,8 @@ const envSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
+  API_KEY: z.string().min(1),
+  NEXT_PUBLIC_API_KEY: z.string().min(1).optional(),
 });
 
 type Env = z.infer<typeof envSchema>;
@@ -25,6 +27,8 @@ function getEnv(): Env {
       process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY:
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY,
+    API_KEY: process.env.API_KEY,
+    NEXT_PUBLIC_API_KEY: process.env.NEXT_PUBLIC_API_KEY,
   });
 
   if (!parsed.success) {

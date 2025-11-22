@@ -4,12 +4,16 @@ import { parseJsonRequest } from "@/lib/api-helpers";
 import { studentIdentifierSchema } from "@/lib/identifiers";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { formatZodError, studentSurveySchema } from "@/lib/validators";
+import { validateApiKey } from "@/lib/api-auth";
 
 type Params = {
   params: Promise<{ id: string }>;
 };
 
-export async function GET(_: Request, context: Params) {
+export async function GET(request: Request, context: Params) {
+  const authError = validateApiKey(request);
+  if (authError) return authError;
+
   const { id } = await context.params;
   const idResult = studentIdentifierSchema.safeParse(id?.trim());
 
@@ -37,6 +41,9 @@ export async function GET(_: Request, context: Params) {
 }
 
 export async function PATCH(request: Request, context: Params) {
+  const authError = validateApiKey(request);
+  if (authError) return authError;
+
   const { id } = await context.params;
   const idResult = studentIdentifierSchema.safeParse(id?.trim());
 

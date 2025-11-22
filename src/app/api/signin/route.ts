@@ -5,8 +5,12 @@ import { parseJsonRequest } from "@/lib/api-helpers";
 import { formatZodError, signinSchema } from "@/lib/validators";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { setSession } from "@/lib/session";
+import { validateApiKey } from "@/lib/api-auth";
 
 export async function POST(request: Request) {
+  const authError = validateApiKey(request);
+  if (authError) return authError;
+
   try {
     const parseResult = await parseJsonRequest(request);
     if (parseResult.error) {
