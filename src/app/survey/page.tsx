@@ -66,6 +66,7 @@ const DORM_OPTIONS = [
   "West Lag",
   "Stern",
   "Wilbur",
+  "The Row",
   "Roble",
   "Toyon",
   "Mirrielees",
